@@ -15,7 +15,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
   if (!user) return null
 
   return (
-    <header className="fixed left-64 right-0 top-0 z-30 h-16 border-b border-border bg-[#0d4f4f]">
+    <header className="fixed left-64 right-0 top-0 z-30 h-16 border-b border-border bg-[#21647f]">
       <div className="flex h-full items-center justify-between px-6">
         {/* Mobile Menu Button */}
         <Button

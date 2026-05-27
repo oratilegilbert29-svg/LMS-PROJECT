@@ -80,7 +80,7 @@ export function Sidebar() {
   const roleLabel = roleLabels[user.role]
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-[#0d4f4f] text-white">
+    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-[#21647f] text-white">
       <div className="flex h-full flex-col">
         {/* Logo/Brand */}
         <div className="flex h-16 items-center gap-2 border-b border-teal-700 px-6">
