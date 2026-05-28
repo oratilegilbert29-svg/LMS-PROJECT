@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useLayoutEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useAuth, UserRole } from "@/lib/auth-context"
@@ -70,17 +71,52 @@ const roleLabels: Record<UserRole, string> = {
   facilitator: "Facilitator Dashboard",
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean
+  onClose?: () => void
+}
+
+export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname()
   const { user, logout } = useAuth()
+  const sidebarRef = useRef<HTMLBaseElement>(null)
 
   if (!user) return null
 
   const navItems = navItemsByRole[user.role]
   const roleLabel = roleLabels[user.role]
 
+  // Handle responsive sidebar behavior
+  useLayoutEffect(() => {
+    const updateSidebarStyle = () => {
+      if (sidebarRef.current) {
+        const isMobile = window.innerWidth < 1024
+        // On desktop, always show sidebar regardless of isOpen state
+        if (!isMobile) {
+          sidebarRef.current.style.transform = 'translateX(0)'
+        } else {
+          // On mobile, respect the isOpen state
+          sidebarRef.current.style.transform = isOpen ? 'translateX(0)' : 'translateX(-100%)'
+        }
+      }
+    }
+
+    // Run immediately on mount
+    updateSidebarStyle()
+    
+    // Also listen for resize events
+    window.addEventListener('resize', updateSidebarStyle)
+    return () => window.removeEventListener('resize', updateSidebarStyle)
+  }, [isOpen])
+
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-[#21647f] text-white">
+    <aside 
+      ref={sidebarRef}
+      className="fixed left-0 top-0 z-40 h-screen w-64 bg-[#21647f] text-white transition-transform duration-300"
+      style={{
+        transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+      }}
+    >
       <div className="flex h-full flex-col">
         {/* Logo/Brand */}
         <div className="flex h-16 items-center gap-2 border-b border-teal-700 px-6">
@@ -99,6 +135,7 @@ export function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={onClose}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   isActive

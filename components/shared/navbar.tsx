@@ -15,7 +15,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
   if (!user) return null
 
   return (
-    <header className="fixed left-64 right-0 top-0 z-30 h-16 border-b border-border bg-[#21647f]">
+    <header className="fixed left-0 lg:left-64 right-0 top-0 z-30 h-16 border-b border-border bg-[#21647f]">
       <div className="flex h-full items-center justify-between px-6">
         {/* Mobile Menu Button */}
         <Button
@@ -28,7 +28,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
         </Button>
 
         {/* Search */}
-        <div className="hidden max-w-md flex-1 md:block">
+        <div className="hidden max-w-md flex-1 md:block lg:flex-1">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-teal-200" />
             <Input
@@ -40,7 +40,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
         </div>
 
         {/* Right Side */}
-        <div className="flex items-center gap-4">
+        <div className="ml-auto flex items-center gap-2 sm:gap-4">
           {/* Notifications */}
           <Button
             variant="ghost"
