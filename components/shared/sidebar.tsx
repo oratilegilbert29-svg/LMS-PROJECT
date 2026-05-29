@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useLayoutEffect, useRef } from "react"
+import { useLayoutEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useAuth, UserRole } from "@/lib/auth-context"
