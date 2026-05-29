@@ -17,7 +17,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
   return (
     <header className="fixed left-0 lg:left-64 right-0 top-0 z-30 h-16 border-b border-border bg-[#21647f]">
       <div className="flex h-full items-center justify-between px-6">
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Button. */}
         <Button
           variant="ghost"
           size="icon"

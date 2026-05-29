@@ -26,7 +26,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <Sidebar isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
       <Navbar onMenuClick={toggleMobileMenu} />
       
-      {/* Blur backdrop for mobile menu */}
+      {/* Blur backdrop for mobile menu. */}
       {isMobile && isMobileMenuOpen && (
         <div 
           className="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm"

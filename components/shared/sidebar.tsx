@@ -91,11 +91,11 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     const updateSidebarStyle = () => {
       if (sidebarRef.current) {
         const isMobile = window.innerWidth < 1024
-        // On desktop, always show sidebar regardless of isOpen state
+        // On desktop, always show sidebar regardless of isOpen state.
         if (!isMobile) {
           sidebarRef.current.style.transform = 'translateX(0)'
         } else {
-          // On mobile, respect the isOpen state
+          // On mobile, respect the isOpen state.
           sidebarRef.current.style.transform = isOpen ? 'translateX(0)' : 'translateX(-100%)'
         }
       }

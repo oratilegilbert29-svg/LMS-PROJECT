@@ -117,7 +117,7 @@ export default function StudentDashboard() {
           </CardContent>
         </Card>
 
-        {/* Upcoming Assignments */}
+        {/* Upcoming Assignments. */}
         <Card>
           <CardHeader>
             <CardTitle>Upcoming Assignments</CardTitle>
