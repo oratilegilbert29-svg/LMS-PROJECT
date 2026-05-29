@@ -23,7 +23,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0d4f4f]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#21647f]" />
       </div>
     )
   }

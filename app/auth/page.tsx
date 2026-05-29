@@ -30,10 +30,10 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d4f4f] to-[#0a3d3d] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#21647f] to-[#0a3d3d] p-4">
       <Card className="w-full max-w-md border-0 shadow-2xl">
         <CardHeader className="space-y-4 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#0d4f4f]">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#21647f]">
             <GraduationCap className="h-10 w-10 text-white" />
           </div>
           <div>
@@ -78,7 +78,7 @@ export default function AuthPage() {
 
             <Button
               type="submit"
-              className="w-full bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+              className="w-full bg-[#21647f] hover:bg-[#0a3d3d]"
               disabled={isLoading}
             >
               {isLoading ? (

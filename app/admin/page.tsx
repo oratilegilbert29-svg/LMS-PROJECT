@@ -1,141 +1,158 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/lib/auth-context"
-import { mockAdminStats, mockCourses, mockUsers } from "@/lib/mock-data"
-import {
-  Users,
-  BookOpen,
-  DollarSign,
-  TrendingUp,
-  ArrowRight,
-  UserPlus,
-  Plus,
-  MoreHorizontal,
-} from "lucide-react"
-import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Users, GraduationCap, BookOpen, BookOpenCheck, Megaphone, UserCheck, CheckCircle, XCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { adminUsers, adminCourses, adminAnnouncements } from "@/lib/mock-data";
 
-export default function AdminDashboard() {
-  const { user } = useAuth()
-  const stats = mockAdminStats
-  const recentCourses = mockCourses.slice(0, 4)
-  const recentUsers = mockUsers.slice(0, 5)
+const initialApplications = [
+  { id: 1, name: "Sarah Johnson", email: "sarah.j@email.com", date: "2026-05-15", subject: "Mathematics" },
+  { id: 2, name: "Michael Chen", email: "m.chen@email.com", date: "2026-05-17", subject: "Computer Science" },
+  { id: 3, name: "Emily Davis", email: "emily.d@email.com", date: "2026-05-18", subject: "Physics" },
+  { id: 4, name: "James Wilson", email: "j.wilson@email.com", date: "2026-05-19", subject: "Chemistry" },
+];
+
+const upcomingEvents = [
+  { id: 1, type: "exam", title: "Final Exam - Mathematics 101", date: "2026-05-25" },
+  { id: 2, type: "assignment", title: "Physics Assignment Due", date: "2026-05-22" },
+  { id: 3, type: "exam", title: "Midterm - Computer Science", date: "2026-05-28" },
+  { id: 4, type: "assignment", title: "Chemistry Lab Report", date: "2026-05-23" },
+];
+
+export default function Dashboard() {
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [applications, setApplications] = useState(initialApplications);
+
+  const totalUsers = adminUsers.length;
+  const students = adminUsers.filter(u => u.role === "Student").length;
+  const facilitators = adminUsers.filter(u => u.role === "Facilitator").length;
+  const courses = adminCourses.length;
+  const unassignedCourses = adminCourses.filter(c => c.facilitatorId === null).length;
+  const pendingApplications = applications.length;
+
+  const stats = [
+    { title: "Total Users", value: totalUsers.toLocaleString(), icon: Users, color: "text-blue-600" },
+    { title: "Students", value: students.toLocaleString(), icon: GraduationCap, color: "text-green-600" },
+    { title: "Facilitators", value: facilitators.toLocaleString(), icon: UserCheck, color: "text-purple-600" },
+    { title: "Courses", value: courses.toLocaleString(), icon: BookOpen, color: "text-orange-600" },
+    { title: "Unassigned Courses", value: unassignedCourses.toLocaleString(), icon: BookOpenCheck, color: "text-red-600" },
+    { title: "Facilitator Pending Applications", value: pendingApplications.toLocaleString(), icon: UserCheck, color: "text-purple-600" },
+  ];
+
+  const handleApprove = (id: number) => {
+    setApplications(applications.filter(app => app.id !== id));
+  };
+
+  const handleDecline = (id: number) => {
+    setApplications(applications.filter(app => app.id !== id));
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-500">Welcome back, {user?.name}. Here&apos;s your system overview.</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="gap-2">
-            <UserPlus className="h-4 w-4" />
-            Add User
-          </Button>
-          <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]">
-            <Plus className="h-4 w-4" />
-            Create Course
-          </Button>
-        </div>
+    <div className="p-8 space-y-8">
+      <div>
+        <h1>Dashboard</h1>
+        <p className="text-muted-foreground mt-1">Welcome back, Admin! Here's what's happening today.</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-[#0d4f4f]" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalStudents.toLocaleString()}</div>
-            <p className="text-xs text-green-500">+12% from last month</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Courses</CardTitle>
-            <BookOpen className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalCourses}</div>
-            <p className="text-xs text-gray-500">{stats.totalFacilitators} facilitators</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Monthly Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${stats.monthlyRevenue.toLocaleString()}</div>
-            <p className="text-xs text-green-500">+8% from last month</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Completion Rate</CardTitle>
-            <TrendingUp className="h-4 w-4 text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.completionRate}%</div>
-            <p className="text-xs text-gray-500">{stats.activeEnrollments} active enrollments</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </CardTitle>
+                <Icon className={`w-5 h-5 ${stat.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{stat.value}</div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Recent Courses */}
+      {/* Three Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Pending Applications */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Recent Courses</CardTitle>
-              <CardDescription>Manage your course catalog</CardDescription>
-            </div>
-            <Link href="/admin/courses">
-              <Button variant="ghost" size="sm" className="gap-1 text-[#0d4f4f]">
-                View All <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+          <CardHeader>
+            <CardTitle>Facilitator Pending Applications</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentCourses.map((course) => (
-                <div
-                  key={course.id}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0d4f4f]/10">
-                      <BookOpen className="h-5 w-5 text-[#0d4f4f]" />
-                    </div>
+            <div className="space-y-3">
+              {applications.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">No pending applications</p>
+              ) : (
+                applications.map((app) => (
+                  <div key={app.id} className="p-3 border rounded-lg space-y-2">
                     <div>
-                      <h4 className="font-medium">{course.title}</h4>
-                      <p className="text-sm text-gray-500">
-                        {course.enrolledStudents} students enrolled
-                      </p>
+                      <p className="font-medium">{app.name}</p>
+                      <p className="text-sm text-muted-foreground">{app.email}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Subject: {app.subject}</p>
+                      <p className="text-xs text-muted-foreground">{app.date}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleApprove(app.id)}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                      >
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDecline(app.id)}
+                        className="flex-1"
+                      >
+                        <XCircle className="w-3 h-3 mr-1" />
+                        Decline
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant={course.status === "active" ? "default" : "secondary"}
-                      className={
-                        course.status === "active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-700"
-                      }
-                    >
-                      {course.status}
-                    </Badge>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Announcements */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Announcements</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {adminAnnouncements.slice(0, 3).map((announcement) => (
+                <div key={announcement.id} className="p-3 border rounded-lg">
+                  <div className="flex items-start gap-2 mb-2">
+                    <Megaphone className="w-4 h-4 text-[#005792] mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{announcement.title}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{announcement.content}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <p className="text-xs text-muted-foreground">{announcement.date}</p>
+                        <Badge
+                          variant="outline"
+                          className={
+                            announcement.priority === "High"
+                              ? "text-red-600 border-red-600"
+                              : announcement.priority === "Medium"
+                              ? "text-orange-600 border-orange-600"
+                              : "text-green-600 border-green-600"
+                          }
+                        >
+                          {announcement.priority}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -143,94 +160,35 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Users */}
+        {/* Calendar */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Recent Users</CardTitle>
-              <CardDescription>Manage students and facilitators</CardDescription>
-            </div>
-            <Link href="/admin/users">
-              <Button variant="ghost" size="sm" className="gap-1 text-[#0d4f4f]">
-                View All <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+          <CardHeader>
+            <CardTitle>Calendar & Upcoming Events</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentUsers.map((u) => (
-                <div
-                  key={u.id}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0d4f4f] text-sm font-semibold text-white">
-                      {u.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </div>
-                    <div>
-                      <h4 className="font-medium">{u.name}</h4>
-                      <p className="text-sm text-gray-500">{u.email}</p>
-                    </div>
+          <CardContent className="space-y-4">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className="rounded-md border"
+            />
+            <div className="space-y-2 mt-4">
+              <h4 className="font-medium">Upcoming Deadlines</h4>
+              {upcomingEvents.map((event) => (
+                <div key={event.id} className="flex items-start gap-3 p-2 hover:bg-accent rounded-lg">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{event.title}</p>
+                    <p className="text-xs text-muted-foreground">{event.date}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className={
-                        u.role === "facilitator"
-                          ? "border-blue-200 bg-blue-50 text-blue-700"
-                          : "border-gray-200 bg-gray-50 text-gray-700"
-                      }
-                    >
-                      {u.role}
-                    </Badge>
-                    <Badge
-                      variant={u.status === "active" ? "default" : "secondary"}
-                      className={
-                        u.status === "active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }
-                    >
-                      {u.status}
-                    </Badge>
-                  </div>
+                  <Badge variant={event.type === 'exam' ? 'destructive' : 'secondary'}>
+                    {event.type}
+                  </Badge>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Common administrative tasks</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <UserPlus className="h-6 w-6 text-[#0d4f4f]" />
-              <span>Add New User</span>
-            </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <Plus className="h-6 w-6 text-[#0d4f4f]" />
-              <span>Create Course</span>
-            </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <TrendingUp className="h-6 w-6 text-[#0d4f4f]" />
-              <span>View Reports</span>
-            </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <BookOpen className="h-6 w-6 text-[#0d4f4f]" />
-              <span>Manage Content</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
-  )
+  );
 }
