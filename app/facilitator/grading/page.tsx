@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -10,6 +11,29 @@ import { Clock, CheckCircle, User, FileText, Send } from "lucide-react"
 
 export default function FacilitatorGradingPage() {
   const pendingSubmissions = mockSubmissions.filter((s) => s.status === "pending")
+  const [grade, setGrade] = useState<number | "">("")
+  const [feedback, setFeedback] = useState("")
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
+
+  const handleSubmitGrade = () => {
+    if (grade === "" || feedback.trim() === "") {
+      setStatusMessage("Please enter both a grade and feedback before submitting.")
+      return
+    }
+
+    setStatusMessage(`Grade submitted: ${grade}/100. Feedback saved.`)
+    setGrade("")
+    setFeedback("")
+  }
+
+  const handleSaveDraft = () => {
+    if (grade === "" && feedback.trim() === "") {
+      setStatusMessage("Add a grade or feedback before saving a draft.")
+      return
+    }
+
+    setStatusMessage("Draft saved. You can continue editing before final submission.")
+  }
 
   return (
     <div className="space-y-6">
@@ -136,21 +160,40 @@ export default function FacilitatorGradingPage() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Grade (out of 100)</label>
-                <Input type="number" placeholder="Enter grade" max={100} min={0} />
+                <Input
+                  type="number"
+                  placeholder="Enter grade"
+                  max={100}
+                  min={0}
+                  value={grade}
+                  onChange={(event) => setGrade(event.target.value === "" ? "" : Number(event.target.value))}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Feedback</label>
                 <Textarea
                   placeholder="Provide feedback for the student..."
                   className="min-h-[120px]"
+                  value={feedback}
+                  onChange={(event) => setFeedback(event.target.value)}
                 />
               </div>
+              {statusMessage ? (
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
+                  {statusMessage}
+                </div>
+              ) : null}
               <div className="flex gap-3">
-                <Button className="flex-1 gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]">
+                <Button
+                  className="flex-1 gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+                  onClick={handleSubmitGrade}
+                >
                   <Send className="h-4 w-4" />
                   Submit Grade
                 </Button>
-                <Button variant="outline">Save Draft</Button>
+                <Button variant="outline" onClick={handleSaveDraft}>
+                  Save Draft
+                </Button>
               </div>
             </div>
           </CardContent>

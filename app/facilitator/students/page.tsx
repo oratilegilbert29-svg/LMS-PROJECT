@@ -29,6 +29,9 @@ const students = [
 ]
 
 export default function FacilitatorStudentsPage() {
+  const handleStudentAction = (studentName: string, action: string) => {
+    alert(`${action} for ${studentName}`)
+  }
   return (
     <div className="space-y-6">
       <div>
@@ -78,7 +81,11 @@ export default function FacilitatorStudentsPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input placeholder="Search students..." className="pl-10" />
         </div>
-        <Button variant="outline" className="gap-2">
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() => alert("Filter options are not configured yet.")}
+        >
           <Filter className="h-4 w-4" />
           Filter
         </Button>
@@ -148,12 +155,12 @@ export default function FacilitatorStudentsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>View Profile</DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleStudentAction(student.name, "View profile")}>View Profile</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleStudentAction(student.name, "Send message") }>
                           <Mail className="mr-2 h-4 w-4" />
                           Send Message
                         </DropdownMenuItem>
-                        <DropdownMenuItem>View Progress</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleStudentAction(student.name, "View progress")}>View Progress</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

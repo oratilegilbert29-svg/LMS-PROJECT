@@ -22,6 +22,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export default function AdminUsersPage() {
+  const handleUserAction = (userName: string, action: string) => {
+    alert(`${action} for ${userName}`)
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -29,11 +33,15 @@ export default function AdminUsersPage() {
           <h1 className="text-2xl font-bold text-gray-900">Users</h1>
           <p className="text-gray-500">Manage students and facilitators</p>
         </div>
-        <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]">
+        <Button
+          className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+          onClick={() => alert("Add user flow is not configured yet.")}
+        >
           <UserPlus className="h-4 w-4" />
           Add User
         </Button>
       </div>
+      
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
@@ -77,7 +85,11 @@ export default function AdminUsersPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input placeholder="Search users..." className="pl-10" />
         </div>
-        <Button variant="outline" className="gap-2">
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() => alert("Filter options are not configured yet.")}
+        >
           <Filter className="h-4 w-4" />
           Filter
         </Button>
@@ -149,12 +161,15 @@ export default function AdminUsersPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleUserAction(user.name, "Send email") }>
                           <Mail className="mr-2 h-4 w-4" />
                           Send Email
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Edit User</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem onClick={() => handleUserAction(user.name, "Edit user")}>Edit User</DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={() => handleUserAction(user.name, "Deactivate")}
+                        >
                           <Ban className="mr-2 h-4 w-4" />
                           Deactivate
                         </DropdownMenuItem>

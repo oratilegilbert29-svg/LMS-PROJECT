@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Search, Upload, FileText, Video, Image, File, MoreHorizontal, Download, Trash2 } from "lucide-react"
+import { Search, Upload, FileText, Video, Image, File, MoreHorizontal, Download, Trash2, X } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +37,16 @@ const getIcon = (type: string) => {
 }
 
 export default function FacilitatorResourcesPage() {
+  const [showUploadForm, setShowUploadForm] = useState(false)
+  const [resourceName, setResourceName] = useState("")
+  const [resourceCourse, setResourceCourse] = useState("")
+  const [resourceType, setResourceType] = useState("")
+  const [resourceDescription, setResourceDescription] = useState("")
+
+  const handleResourceAction = (resourceName: string, action: string) => {
+    alert(`${action} for ${resourceName}`)
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -41,11 +54,86 @@ export default function FacilitatorResourcesPage() {
           <h1 className="text-2xl font-bold text-gray-900">Resources</h1>
           <p className="text-gray-500">Manage course materials and resources</p>
         </div>
-        <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]">
+        <Button
+          className="gap-2 bg-[#0f3b92] hover:bg-[#0d3675]"
+          onClick={() => setShowUploadForm(true)}
+        >
           <Upload className="h-4 w-4" />
           Upload Resource
         </Button>
       </div>
+
+      {showUploadForm && (
+        <Card className="rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Upload Resource</h2>
+              <p className="text-sm text-gray-500">Add a new document, video, or resource for your students.</p>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setShowUploadForm(false)}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="grid gap-4 py-4 sm:grid-cols-3">
+            <div className="sm:col-span-2">
+              <Label htmlFor="resource-name">Resource Name</Label>
+              <Input
+                id="resource-name"
+                value={resourceName}
+                onChange={(event) => setResourceName(event.target.value)}
+                placeholder="Lecture notes, video title, etc."
+              />
+            </div>
+            <div>
+              <Label htmlFor="resource-course">Course</Label>
+              <Input
+                id="resource-course"
+                value={resourceCourse}
+                onChange={(event) => setResourceCourse(event.target.value)}
+                placeholder="Course name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="resource-type">Type</Label>
+              <Input
+                id="resource-type"
+                value={resourceType}
+                onChange={(event) => setResourceType(event.target.value)}
+                placeholder="Document, video, image"
+              />
+            </div>
+            <div className="sm:col-span-3">
+              <Label htmlFor="resource-description">Description</Label>
+              <Textarea
+                id="resource-description"
+                value={resourceDescription}
+                onChange={(event) => setResourceDescription(event.target.value)}
+                placeholder="Describe the purpose of this resource"
+                className="h-24"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setShowUploadForm(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#0f3b92] hover:bg-[#0d3675]"
+              onClick={() => {
+                if (!resourceName || !resourceCourse || !resourceType) return
+                setShowUploadForm(false)
+                alert("Resource uploaded successfully.")
+                setResourceName("")
+                setResourceCourse("")
+                setResourceType("")
+                setResourceDescription("")
+              }}
+            >
+              Upload
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
@@ -127,12 +215,17 @@ export default function FacilitatorResourcesPage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleResourceAction(resource.name, "Download") }>
                       <Download className="mr-2 h-4 w-4" />
                       Download
                     </DropdownMenuItem>
-                    <DropdownMenuItem>Share with Students</DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600">
+                    <DropdownMenuItem onClick={() => handleResourceAction(resource.name, "Share with students") }>
+                      Share with Students
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-red-600"
+                      onClick={() => handleResourceAction(resource.name, "Delete")}
+                    >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete
                     </DropdownMenuItem>

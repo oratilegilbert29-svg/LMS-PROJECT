@@ -32,6 +32,14 @@ export interface Announcement {
   author: string
 }
 
+export interface Notification {
+  id: string
+  type: string
+  title: string
+  message: string
+  date: string
+}
+
 export interface StudentStats {
   enrolledCourses: number
   completedCourses: number
@@ -182,6 +190,30 @@ export const mockAnnouncements: Announcement[] = [
     content: "We are launching a new course on AI Fundamentals starting March 1st. Enroll now!",
     date: "2024-02-08",
     author: "Course Team",
+  },
+]
+
+export const mockNotifications: Notification[] = [
+  {
+    id: "1",
+    type: "Assessment",
+    title: "New assessment published",
+    message: "A new quiz has been added for your Web Development course.",
+    date: "May 28, 2026",
+  },
+  {
+    id: "2",
+    type: "Course",
+    title: "Course enrollment update",
+    message: "12 students enrolled in your Advanced React course today.",
+    date: "May 27, 2026",
+  },
+  {
+    id: "3",
+    type: "Message",
+    title: "Student message received",
+    message: "A learner sent you a question about assignment deadlines.",
+    date: "May 26, 2026",
   },
 ]
 

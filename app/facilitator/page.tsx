@@ -1,8 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { useAuth } from "@/lib/auth-context"
 import { mockFacilitatorStats, mockCourses, mockSubmissions } from "@/lib/mock-data"
@@ -15,10 +19,15 @@ import {
   Plus,
   Clock,
   CheckCircle,
+  X,
 } from "lucide-react"
 import Link from "next/link"
 
 export default function FacilitatorDashboard() {
+  const [showAssignmentForm, setShowAssignmentForm] = useState(false)
+  const [assignmentTitle, setAssignmentTitle] = useState("")
+  const [assignmentCourse, setAssignmentCourse] = useState("")
+  const [assignmentDescription, setAssignmentDescription] = useState("")
   const { user } = useAuth()
   const stats = mockFacilitatorStats
   const myCourses = mockCourses.filter((c) => c.instructor === "Mike Facilitator")
@@ -32,11 +41,78 @@ export default function FacilitatorDashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Facilitator Dashboard</h1>
           <p className="text-gray-500">Welcome back, {user?.name}. Here&apos;s your teaching overview.</p>
         </div>
-        <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]">
+        <Button
+          className="gap-2 bg-[#0f3b92] hover:bg-[#0d3675]"
+          onClick={() => setShowAssignmentForm(true)}
+        >
           <Plus className="h-4 w-4" />
           Create Assignment
         </Button>
       </div>
+
+      {showAssignmentForm && (
+        <Card className="rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">New Assignment</h2>
+              <p className="text-sm text-gray-500">Add a new assignment and publish it for students.</p>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setShowAssignmentForm(false)}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="grid gap-4 py-4 sm:grid-cols-3">
+            <div className="sm:col-span-3">
+              <Label htmlFor="assignment-title">Title</Label>
+              <Input
+                id="assignment-title"
+                value={assignmentTitle}
+                onChange={(event) => setAssignmentTitle(event.target.value)}
+                placeholder="Enter assignment title"
+              />
+            </div>
+            <div>
+              <Label htmlFor="assignment-course">Course</Label>
+              <Input
+                id="assignment-course"
+                value={assignmentCourse}
+                onChange={(event) => setAssignmentCourse(event.target.value)}
+                placeholder="Course name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="assignment-due">Due Date</Label>
+              <Input id="assignment-due" type="date" />
+            </div>
+            <div className="sm:col-span-3">
+              <Label htmlFor="assignment-desc">Description</Label>
+              <Textarea
+                id="assignment-desc"
+                value={assignmentDescription}
+                onChange={(event) => setAssignmentDescription(event.target.value)}
+                placeholder="Write a short assignment description"
+                className="h-24"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <Button variant="outline" onClick={() => setShowAssignmentForm(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#0f3b92] hover:bg-[#0d3675]"
+              onClick={() => {
+                setShowAssignmentForm(false)
+                setAssignmentTitle("")
+                setAssignmentCourse("")
+                setAssignmentDescription("")
+              }}
+            >
+              Save Assignment
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -139,8 +215,8 @@ export default function FacilitatorDashboard() {
                       12 lessons
                     </span>
                   </div>
-                  <Button size="sm" variant="outline">
-                    Manage
+                  <Button asChild size="sm" variant="outline">
+                    <Link href="/facilitator/courses">Manage</Link>
                   </Button>
                 </div>
               </div>
@@ -168,9 +244,11 @@ export default function FacilitatorDashboard() {
                   <span className="text-xs text-gray-400">
                     Submitted {new Date(submission.submittedAt).toLocaleDateString()}
                   </span>
-                  <Button size="sm" className="h-7 bg-[#0d4f4f] hover:bg-[#0a3d3d]">
-                    Grade
-                  </Button>
+                  <Link href="/facilitator/grading" className="h-7">
+                    <Button asChild size="sm" className="h-full bg-[#0d4f4f] hover:bg-[#0a3d3d]">
+                      <span>Grade</span>
+                    </Button>
+                  </Link>
                 </div>
               </div>
             ))}

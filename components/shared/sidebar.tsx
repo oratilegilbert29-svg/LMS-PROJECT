@@ -19,6 +19,7 @@ import {
   MessageSquare,
   Calendar,
   Award,
+  User,
 } from "lucide-react"
 
 interface SidebarItem {
@@ -49,12 +50,12 @@ const adminNavItems: SidebarItem[] = [
 
 const facilitatorNavItems: SidebarItem[] = [
   { title: "Dashboard", href: "/facilitator", icon: LayoutDashboard },
-  { title: "My Courses", href: "/facilitator/courses", icon: BookOpen },
-  { title: "Students", href: "/facilitator/students", icon: GraduationCap },
-  { title: "Assignments", href: "/facilitator/assignments", icon: ClipboardList },
-  { title: "Grading", href: "/facilitator/grading", icon: FileText },
-  { title: "Resources", href: "/facilitator/resources", icon: FolderOpen },
-  { title: "Messages", href: "/facilitator/messages", icon: MessageSquare },
+  { title: "Courses", href: "/facilitator/courses", icon: BookOpen },
+  { title: "Assessments", href: "/facilitator/assessments", icon: ClipboardList },
+  { title: "Announcements", href: "/facilitator/announcements", icon: Bell },
+  { title: "Reports", href: "/facilitator/reports", icon: BarChart3 },
+  { title: "Account", href: "/facilitator/account", icon: User },
+  { title: "Profile", href: "/facilitator/profile", icon: User },
   { title: "Settings", href: "/facilitator/settings", icon: Settings },
 ]
 
@@ -76,19 +77,37 @@ export function Sidebar() {
 
   if (!user) return null
 
+  if (!user) return null
+
   const navItems = navItemsByRole[user.role]
   const roleLabel = roleLabels[user.role]
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-[#21647f] text-white">
+    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-[#0f3b92] text-white">
       <div className="flex h-full flex-col">
         {/* Logo/Brand */}
-        <div className="flex h-16 items-center gap-2 border-b border-teal-700 px-6">
-          <GraduationCap className="h-8 w-8" />
-          <div>
-            <h1 className="text-lg font-bold">LMS</h1>
-            <p className="text-xs text-teal-200">{roleLabel}</p>
-          </div>
+        <div className="flex h-16 items-center gap-2 border-b border-white/20 px-6">
+          {user.role === "facilitator" ? (
+            <>
+              <img
+                src="/MDiHub%20Logo%20Black-01.png"
+                alt="MDIHUB Logo"
+                className="h-10 w-auto rounded-sm bg-white/10 p-1"
+              />
+              <div>
+                <h1 className="text-lg font-bold">MDIHUB</h1>
+                <p className="text-xs text-teal-200">{roleLabel}</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <GraduationCap className="h-8 w-8" />
+              <div>
+                <h1 className="text-lg font-bold">LMS</h1>
+                <p className="text-xs text-teal-200">{roleLabel}</p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Navigation */}
@@ -102,8 +121,8 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-black text-white"
-                    : "text-teal-100 hover:bg-black/40 hover:text-white"
+                    ? "bg-white/10 text-white"
+                    : "text-slate-100 hover:bg-white/10 hover:text-white"
                 )}
               >
                 <item.icon className="h-5 w-5" />
@@ -114,7 +133,7 @@ export function Sidebar() {
         </nav>
 
         {/* User Info & Logout */}
-        <div className="border-t border-teal-700 p-4">
+        <Link href={`/${user.role}/profile`} className="block border-t border-teal-700 p-4 hover:bg-white/10 transition-colors rounded-lg">
           <div className="mb-3 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-700 text-sm font-semibold">
               {user.name
@@ -134,7 +153,7 @@ export function Sidebar() {
             <LogOut className="h-5 w-5" />
             Sign Out
           </button>
-        </div>
+        </Link>
       </div>
     </aside>
   )

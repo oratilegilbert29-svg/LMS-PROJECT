@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,7 +22,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+type Course = typeof mockCourses[number]
+
+type AdminCourseAction = "view" | "edit" | "manage" | "analytics"
+
+type AdminCourseInfo = {
+  course: Course
+  action: AdminCourseAction
+} | null
+
+const handleCreateCourse = () => {
+  alert("Create course flow is not configured yet.")
+}
+
+const handleFilter = () => {
+  alert("Filter options are not configured yet.")
+}
+
 export default function AdminCoursesPage() {
+  const [selectedCourseInfo, setSelectedCourseInfo] = useState<AdminCourseInfo>(null)
+
+  const handleCourseAction = (course: Course, action: AdminCourseAction | "delete") => {
+    if (action === "delete") {
+      alert(`Delete flow for ${course.title} is not configured yet.`)
+      return
+    }
+    setSelectedCourseInfo({ course, action })
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -29,7 +57,7 @@ export default function AdminCoursesPage() {
           <h1 className="text-2xl font-bold text-gray-900">Courses</h1>
           <p className="text-gray-500">Manage all courses in the system</p>
         </div>
-        <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]">
+        <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]" onClick={handleCreateCourse}>
           <Plus className="h-4 w-4" />
           Create Course
         </Button>
@@ -77,7 +105,7 @@ export default function AdminCoursesPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input placeholder="Search courses..." className="pl-10" />
         </div>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2" onClick={handleFilter}>
           <Filter className="h-4 w-4" />
           Filter
         </Button>
@@ -132,15 +160,23 @@ export default function AdminCoursesPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleCourseAction(course, "view") }>
                           <Eye className="mr-2 h-4 w-4" />
                           View
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleCourseAction(course, "edit") }>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit
+                          Edit Course
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem onClick={() => handleCourseAction(course, "manage") }>
+                          <MoreHorizontal className="mr-2 h-4 w-4" />
+                          Manage Course
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleCourseAction(course, "analytics") }>
+                          <Eye className="mr-2 h-4 w-4" />
+                          View Analytics
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600" onClick={() => handleCourseAction(course, "delete") }>
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem>
@@ -153,6 +189,45 @@ export default function AdminCoursesPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {selectedCourseInfo ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>{`${selectedCourseInfo.action === "manage" ? "Manage Course" : selectedCourseInfo.action === "edit" ? "Edit Course" : selectedCourseInfo.action === "analytics" ? "Course Analytics" : "Course Details"}`}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-gray-600">{selectedCourseInfo.course.title}</p>
+            <p className="text-sm text-gray-500">Instructor: {selectedCourseInfo.course.instructor}</p>
+            <p className="text-sm text-gray-500">Category: {selectedCourseInfo.course.category}</p>
+            <p className="text-sm text-gray-500">Duration: {selectedCourseInfo.course.duration}</p>
+            {selectedCourseInfo.action === "view" ? (
+              <p className="text-sm text-slate-700">Use this view to inspect basic course details and quick stats.</p>
+            ) : null}
+            {selectedCourseInfo.action === "edit" ? (
+              <div className="space-y-2 text-sm text-slate-700">
+                <p>Title: <strong>{selectedCourseInfo.course.title}</strong></p>
+                <p>Description: <strong>{selectedCourseInfo.course.description}</strong></p>
+                <p>Status: <strong>{selectedCourseInfo.course.status}</strong></p>
+                <p>This panel is a placeholder for editing course metadata.</p>
+              </div>
+            ) : null}
+            {selectedCourseInfo.action === "manage" ? (
+              <div className="space-y-2 text-sm text-slate-700">
+                <p>Active status: <strong>{selectedCourseInfo.course.status}</strong></p>
+                <p>Enrolled students: <strong>{selectedCourseInfo.course.enrolledStudents}</strong></p>
+                <p>Use this panel to manage enrollment, course settings, and content workflow.</p>
+              </div>
+            ) : null}
+            {selectedCourseInfo.action === "analytics" ? (
+              <div className="space-y-2 text-sm text-slate-700">
+                <p>Progress: <strong>{selectedCourseInfo.course.progress ?? 0}%</strong></p>
+                <p>Enrollment: <strong>{selectedCourseInfo.course.enrolledStudents}</strong></p>
+                <p>This panel shows course analytics and completion trends.</p>
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
+      ) : null}
     </div>
   )
 }

@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { Settings, Database, Mail, Shield, Globe, Palette } from "lucide-react"
+import { Bell, Settings, Database, Mail, Shield, Globe, Palette } from "lucide-react"
 
 export default function AdminSettingsPage() {
+  const handleSave = (section: string) => {
+    alert(`${section} saved successfully.`)
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -43,7 +47,12 @@ export default function AdminSettingsPage() {
                 defaultValue="A comprehensive learning management system"
               />
             </div>
-            <Button className="bg-[#0d4f4f] hover:bg-[#0a3d3d]">Save Changes</Button>
+            <Button
+              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+              onClick={() => handleSave("General settings")}
+            >
+              Save Changes
+            </Button>
           </CardContent>
         </Card>
 
@@ -74,7 +83,46 @@ export default function AdminSettingsPage() {
               </div>
               <Switch defaultChecked />
             </div>
-            <Button className="bg-[#0d4f4f] hover:bg-[#0a3d3d]">Save Email Settings</Button>
+            <Button
+              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+              onClick={() => handleSave("Email settings")}
+            >
+              Save Email Settings
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Notification Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Bell className="h-5 w-5 text-[#0d4f4f]" />
+              Notification Settings
+            </CardTitle>
+            <CardDescription>Configure notification alerts for admins and users.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">System Alerts</p>
+                <p className="text-sm text-gray-500">Notify admins about system health and errors.</p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Enrollment Updates</p>
+                <p className="text-sm text-gray-500">Receive alerts when new users enroll.</p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Email Notifications</p>
+                <p className="text-sm text-gray-500">Enable email-based notification delivery.</p>
+              </div>
+              <Switch />
+            </div>
           </CardContent>
         </Card>
 

@@ -11,6 +11,10 @@ import { User, Bell, Shield, Palette } from "lucide-react"
 export default function StudentSettingsPage() {
   const { user } = useAuth()
 
+  const handleSave = (section: string) => {
+    alert(`${section} saved successfully.`)
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -48,7 +52,12 @@ export default function StudentSettingsPage() {
                 <Input id="email" type="email" defaultValue={user?.email} />
               </div>
             </div>
-            <Button className="bg-[#0d4f4f] hover:bg-[#0a3d3d]">Save Changes</Button>
+            <Button
+              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+              onClick={() => handleSave("Profile settings")}
+            >
+              Save Changes
+            </Button>
           </CardContent>
         </Card>
 
@@ -117,7 +126,12 @@ export default function StudentSettingsPage() {
                 <Input id="confirm-password" type="password" />
               </div>
             </div>
-            <Button className="bg-[#0d4f4f] hover:bg-[#0a3d3d]">Update Password</Button>
+            <Button
+              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+              onClick={() => handleSave("Password update")}
+            >
+              Update Password
+            </Button>
           </CardContent>
         </Card>
 
