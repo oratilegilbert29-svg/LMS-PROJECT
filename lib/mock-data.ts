@@ -248,6 +248,51 @@ export const mockUsers = [
   { id: "3", name: "Bob Smith", email: "bob@example.com", role: "student", status: "inactive", enrolledCourses: 1 },
   { id: "4", name: "Mike Facilitator", email: "mike@example.com", role: "facilitator", status: "active", courses: 4 },
   { id: "5", name: "Dr. Emily Chen", email: "emily@example.com", role: "facilitator", status: "active", courses: 2 },
+  { id: "6", name: "Sarah Admin", email: "admin@lms.com", role: "admin", status: "active" },
+]
+
+// Admin page data sources (shared so dashboard counts match)
+export type AdminUser = { id: number; name: string; email: string; role: string; status: string }
+export type AdminCourse = { id: number; title: string; description: string; facilitator: string; facilitatorId: number | null; students: number; status: string; startDate: string; endDate: string }
+export type AdminAnnouncement = { id: number; title: string; content: string; date: string; priority: string }
+export type FacilitatorOption = { id: number | null; name: string }
+
+export const adminUsers: AdminUser[] = [
+  { id: 1, name: "John Doe", email: "john.doe@email.com", role: "Student", status: "Active" },
+  { id: 2, name: "Jane Smith", email: "jane.smith@email.com", role: "Facilitator", status: "Active" },
+  { id: 3, name: "Bob Johnson", email: "bob.j@email.com", role: "Student", status: "Active" },
+  { id: 4, name: "Alice Brown", email: "alice.b@email.com", role: "Facilitator", status: "Suspended" },
+  { id: 5, name: "Charlie Wilson", email: "charlie.w@email.com", role: "Student", status: "Active" },
+  { id: 6, name: "Ethan Davis", email: "ethan.d@email.com", role: "Student", status: "Active" },
+  { id: 7, name: "Fiona Garcia", email: "fiona.g@email.com", role: "Facilitator", status: "Active" },
+  { id: 8, name: "George Taylor", email: "george.t@email.com", role: "Student", status: "Suspended" },
+  { id: 9, name: "Sarah Admin", email: "admin@lms.com", role: "Admin", status: "Active" },
+]
+
+export const adminCourses: AdminCourse[] = [
+  { id: 1, title: "Introduction to Mathematics", description: "Foundational mathematics course covering algebra and calculus", facilitator: "Jane Smith", facilitatorId: 2, students: 45, status: "Active", startDate: "2026-01-15", endDate: "2026-05-30" },
+  { id: 2, title: "Advanced Computer Science", description: "Advanced topics in algorithms and data structures", facilitator: "Bob Johnson", facilitatorId: 3, students: 32, status: "Active", startDate: "2026-01-20", endDate: "2026-06-15" },
+  { id: 3, title: "Physics 101", description: "Introduction to classical mechanics and thermodynamics", facilitator: "Alice Brown", facilitatorId: 4, students: 28, status: "Active", startDate: "2026-02-01", endDate: "2026-06-20" },
+  { id: 4, title: "Chemistry Fundamentals", description: "Basic chemistry principles and laboratory techniques", facilitator: "Unassigned", facilitatorId: null, students: 0, status: "Draft", startDate: "2026-06-01", endDate: "2026-12-15" },
+  { id: 5, title: "English Literature", description: "Survey of British and American literature", facilitator: "Fiona Garcia", facilitatorId: 8, students: 38, status: "Active", startDate: "2026-01-10", endDate: "2026-05-25" },
+  { id: 6, title: "Data Structures", description: "Comprehensive study of data structures and their applications", facilitator: "Jane Smith", facilitatorId: 2, students: 41, status: "Active", startDate: "2026-02-05", endDate: "2026-06-30" },
+  { id: 7, title: "Biology Basics", description: "Introduction to cellular biology and genetics", facilitator: "Unassigned", facilitatorId: null, students: 0, status: "Draft", startDate: "2026-06-15", endDate: "2026-12-20" },
+]
+
+export const adminFacilitators: FacilitatorOption[] = [
+  { id: null, name: "Unassigned" },
+  { id: 2, name: "Jane Smith" },
+  { id: 3, name: "Bob Johnson" },
+  { id: 4, name: "Alice Brown" },
+  { id: 8, name: "Fiona Garcia" },
+]
+
+export const adminAnnouncements: AdminAnnouncement[] = [
+  { id: 1, title: "System Maintenance Scheduled", content: "The LMS will undergo scheduled maintenance on May 25th from 2:00 AM to 4:00 AM. Please plan accordingly.", date: "2026-05-18", priority: "High" },
+  { id: 2, title: "New Course Available", content: "We're excited to announce a new course on Machine Learning. Enrollment opens next week!", date: "2026-05-17", priority: "Medium" },
+  { id: 3, title: "Exam Schedule Released", content: "The final exam schedule for the semester has been published. Check your course dashboards for details.", date: "2026-05-15", priority: "High" },
+  { id: 4, title: "Welcome New Facilitators", content: "Please join us in welcoming our 5 new facilitators who joined this month!", date: "2026-05-12", priority: "Low" },
+  { id: 5, title: "Library Resources Update", content: "New digital resources have been added to the library. Check them out in the Resources section.", date: "2026-05-10", priority: "Medium" },
 ]
 
 // Mock Submissions for Facilitator
