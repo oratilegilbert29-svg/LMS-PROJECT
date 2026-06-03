@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image";
 import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
@@ -48,11 +49,17 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#21647f] to-[#0a3d3d] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#005792] p-4">
       <Card className="w-full max-w-md border-0 shadow-2xl">
         <CardHeader className="space-y-4 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#21647f]">
-            <GraduationCap className="h-10 w-10 text-white" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center ">
+         <Image
+    src="/MDiHub Logo Black-01.png"
+    alt="Logo"
+    width={80}
+    height={80}
+    className="object-cover"
+  />
           </div>
           <div>
             <CardTitle className="text-2xl font-bold">Welcome to LMS</CardTitle>
@@ -130,7 +137,7 @@ export default function AuthPage() {
 
             <Button
               type="submit"
-              className="w-full bg-[#21647f] hover:bg-[#0a3d3d]"
+              className="w-full bg-[#005792] hover:bg-[#005780]"
               disabled={isLoading}
             >
               {isRegistering ? "Submit Registration" : isLoading ? (
@@ -150,7 +157,7 @@ export default function AuthPage() {
             </p>
             <button
               type="button"
-              className="w-full rounded-lg bg-white px-4 py-2 text-sm font-medium text-[#0d4f4f] shadow-sm hover:bg-slate-100"
+              className="w-full rounded-lg bg-white px-4 py-2 text-sm font-medium text-[#005792] shadow-sm hover:bg-slate-100"
               onClick={() => {
                 setIsRegistering(!isRegistering)
                 setError("")

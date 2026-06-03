@@ -22,12 +22,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-white">
-      <Sidebar />
-      <Navbar />
-      <main className="ml-64 min-h-screen pt-16 bg-white">
-=======
     <div className="min-h-screen bg-gray-50">
       <Sidebar isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
       <Navbar onMenuClick={toggleMobileMenu} />
@@ -40,7 +34,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       )}
       
       <main className="lg:ml-64 pt-16">
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
         <div className="p-6">{children}</div>
       </main>
     </div>
