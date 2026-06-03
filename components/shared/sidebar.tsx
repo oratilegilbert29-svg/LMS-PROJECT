@@ -46,6 +46,7 @@ const adminNavItems: SidebarItem[] = [
   { title: "Users", href: "/admin/users", icon: Users },
   { title: "Courses", href: "/admin/courses", icon: BookOpen },
   { title: "Announcements", href: "/admin/announcements", icon: Megaphone },
+  { title: "Reports", href: "/admin/reports", icon: BarChart3 },
   { title: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
@@ -55,7 +56,6 @@ const facilitatorNavItems: SidebarItem[] = [
   { title: "Assessments", href: "/facilitator/assessments", icon: ClipboardList },
   { title: "Announcements", href: "/facilitator/announcements", icon: Bell },
   { title: "Reports", href: "/facilitator/reports", icon: BarChart3 },
-  { title: "Account", href: "/facilitator/account", icon: User },
   { title: "Profile", href: "/facilitator/profile", icon: User },
   { title: "Settings", href: "/facilitator/settings", icon: Settings },
 ]
@@ -66,6 +66,12 @@ const navItemsByRole: Record<UserRole, SidebarItem[]> = {
   facilitator: facilitatorNavItems,
 }
 
+const roleLabels: Record<UserRole, string> = {
+  student: "Student Portal",
+  admin: "Admin Dashboard",
+  facilitator: "Facilitator Portal",
+}
+
 interface SidebarProps {
   isOpen?: boolean
   onClose?: () => void
@@ -74,13 +80,12 @@ interface SidebarProps {
 export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname()
   const { user, logout } = useAuth()
-  const sidebarRef = useRef<HTMLBaseElement>(null)
-
-  if (!user) return null
+  const sidebarRef = useRef<HTMLDivElement>(null)
 
   if (!user) return null
 
   const navItems = navItemsByRole[user.role]
+  const roleLabel = roleLabels[user.role]
 
   useLayoutEffect(() => {
     const updateSidebarStyle = () => {

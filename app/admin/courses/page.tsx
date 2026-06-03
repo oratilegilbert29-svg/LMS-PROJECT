@@ -1,12 +1,8 @@
 "use client"
 
 import { useState } from "react"
-<<<<<<< HEAD
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-=======
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -41,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { Search, Filter } from "lucide-react"
 import { Plus, MoreVertical, Eye, Pencil, Trash2, Ban, Play, UserPlus, UserMinus } from "lucide-react"
 import { adminCourses, adminFacilitators, type AdminCourse } from "@/lib/mock-data"
 
@@ -51,6 +48,21 @@ export default function Courses() {
   const [editingCourse, setEditingCourse] = useState<AdminCourse | null>(null)
   const [managingCourseFacilitator, setManagingCourseFacilitator] = useState<AdminCourse | null>(null)
   const [selectedFacilitator, setSelectedFacilitator] = useState<string>("Unassigned")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showFilters, setShowFilters] = useState(false)
+  const [filterStatus, setFilterStatus] = useState<string>("all")
+  const [filterFacilitator, setFilterFacilitator] = useState<string>("all")
+
+  const filteredCourses = courses.filter(course => {
+    if (searchQuery && !course.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
+    if (filterStatus !== "all" && course.status !== filterStatus) return false
+    if (filterFacilitator !== "all") {
+      if (filterFacilitator === "unassigned" && course.facilitator !== "Unassigned") return false
+      if (filterFacilitator !== "unassigned" && course.facilitator !== filterFacilitator) return false
+    }
+    return true
+  })
+
   const [newCourse, setNewCourse] = useState({
     title: "",
     description: "",
@@ -88,7 +100,6 @@ export default function Courses() {
 
   const handleUpdateCourse = () => {
     if (!editingCourse) return
-
     setCourses(courses.map(c =>
       c.id === editingCourse.id ? editingCourse : c
     ))
@@ -133,7 +144,6 @@ export default function Courses() {
 
   const handleAssignFacilitator = () => {
     if (!managingCourseFacilitator) return
-
     const facilitator = adminFacilitators.find(f => f.name === selectedFacilitator)
     setCourses(courses.map(c =>
       c.id === managingCourseFacilitator.id
@@ -144,37 +154,6 @@ export default function Courses() {
     setManagingCourseFacilitator(null)
   }
 
-<<<<<<< HEAD
-type Course = typeof mockCourses[number]
-
-type AdminCourseAction = "view" | "edit" | "manage" | "analytics"
-
-type AdminCourseInfo = {
-  course: Course
-  action: AdminCourseAction
-} | null
-
-const handleCreateCourse = () => {
-  alert("Create course flow is not configured yet.")
-}
-
-const handleFilter = () => {
-  alert("Filter options are not configured yet.")
-}
-
-export default function AdminCoursesPage() {
-  const [selectedCourseInfo, setSelectedCourseInfo] = useState<AdminCourseInfo>(null)
-
-  const handleCourseAction = (course: Course, action: AdminCourseAction | "delete") => {
-    if (action === "delete") {
-      alert(`Delete flow for ${course.title} is not configured yet.`)
-      return
-    }
-    setSelectedCourseInfo({ course, action })
-  }
-
-=======
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
   return (
     <div className="p-8 space-y-6">
       <div className="flex justify-between items-center">
@@ -182,63 +161,6 @@ export default function AdminCoursesPage() {
           <h1>Courses Management</h1>
           <p className="text-muted-foreground mt-1">Manage all courses and assignments</p>
         </div>
-<<<<<<< HEAD
-        <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]" onClick={handleCreateCourse}>
-          <Plus className="h-4 w-4" />
-          Create Course
-        </Button>
-      </div>
-
-      {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Courses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">78</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Active</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">65</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Draft</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">10</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Archived</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-600">3</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search and Filter */}
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <Input placeholder="Search courses..." className="pl-10" />
-        </div>
-        <Button variant="outline" className="gap-2" onClick={handleFilter}>
-          <Filter className="h-4 w-4" />
-          Filter
-        </Button>
-      </div>
-
-      {/* Courses Table */}
-=======
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="bg-[#005792] hover:bg-[#00437a]">
@@ -374,7 +296,92 @@ export default function AdminCoursesPage() {
         </Dialog>
       </div>
 
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
+      {/* Stats */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">Total Courses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{courses.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">Active</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{courses.filter(c => c.status === "Active").length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">Draft</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{courses.filter(c => c.status === "Draft").length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">Suspended</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-600">{courses.filter(c => c.status === "Suspended").length}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search and Filter */}
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder="Search courses..."
+            className="pl-10"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Button variant="outline" className="gap-2" onClick={() => setShowFilters(!showFilters)}>
+          <Filter className="h-4 w-4" />
+          Filter
+        </Button>
+      </div>
+      {showFilters && (
+        <div className="flex gap-4 p-4 border rounded-lg bg-gray-50">
+          <div className="space-y-1">
+            <Label className="text-xs">Status</Label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            >
+              <option value="all">All Statuses</option>
+              <option value="Active">Active</option>
+              <option value="Draft">Draft</option>
+              <option value="Suspended">Suspended</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Facilitator</Label>
+            <select
+              value={filterFacilitator}
+              onChange={(e) => setFilterFacilitator(e.target.value)}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            >
+              <option value="all">All Facilitators</option>
+              <option value="unassigned">Unassigned</option>
+              {adminFacilitators.map(f => (
+                <option key={f.id} value={f.name}>{f.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* Courses Table */}
       <Card>
         <CardHeader>
           <CardTitle>All Courses</CardTitle>
@@ -392,7 +399,7 @@ export default function AdminCoursesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {courses.map((course) => (
+              {filteredCourses.map((course) => (
                 <TableRow key={course.id}>
                   <TableCell className="font-medium">{course.title}</TableCell>
                   <TableCell>
@@ -436,26 +443,6 @@ export default function AdminCoursesPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-<<<<<<< HEAD
-                        <DropdownMenuItem onClick={() => handleCourseAction(course, "view") }>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleCourseAction(course, "edit") }>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit Course
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleCourseAction(course, "manage") }>
-                          <MoreHorizontal className="mr-2 h-4 w-4" />
-                          Manage Course
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleCourseAction(course, "analytics") }>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Analytics
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600" onClick={() => handleCourseAction(course, "delete") }>
-                          <Trash2 className="mr-2 h-4 w-4" />
-=======
                         <DropdownMenuItem>
                           <Eye className="w-4 h-4 mr-2" />
                           View Details
@@ -495,7 +482,6 @@ export default function AdminCoursesPage() {
                           className="text-destructive"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -508,46 +494,6 @@ export default function AdminCoursesPage() {
         </CardContent>
       </Card>
 
-<<<<<<< HEAD
-      {selectedCourseInfo ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{`${selectedCourseInfo.action === "manage" ? "Manage Course" : selectedCourseInfo.action === "edit" ? "Edit Course" : selectedCourseInfo.action === "analytics" ? "Course Analytics" : "Course Details"}`}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm text-gray-600">{selectedCourseInfo.course.title}</p>
-            <p className="text-sm text-gray-500">Instructor: {selectedCourseInfo.course.instructor}</p>
-            <p className="text-sm text-gray-500">Category: {selectedCourseInfo.course.category}</p>
-            <p className="text-sm text-gray-500">Duration: {selectedCourseInfo.course.duration}</p>
-            {selectedCourseInfo.action === "view" ? (
-              <p className="text-sm text-slate-700">Use this view to inspect basic course details and quick stats.</p>
-            ) : null}
-            {selectedCourseInfo.action === "edit" ? (
-              <div className="space-y-2 text-sm text-slate-700">
-                <p>Title: <strong>{selectedCourseInfo.course.title}</strong></p>
-                <p>Description: <strong>{selectedCourseInfo.course.description}</strong></p>
-                <p>Status: <strong>{selectedCourseInfo.course.status}</strong></p>
-                <p>This panel is a placeholder for editing course metadata.</p>
-              </div>
-            ) : null}
-            {selectedCourseInfo.action === "manage" ? (
-              <div className="space-y-2 text-sm text-slate-700">
-                <p>Active status: <strong>{selectedCourseInfo.course.status}</strong></p>
-                <p>Enrolled students: <strong>{selectedCourseInfo.course.enrolledStudents}</strong></p>
-                <p>Use this panel to manage enrollment, course settings, and content workflow.</p>
-              </div>
-            ) : null}
-            {selectedCourseInfo.action === "analytics" ? (
-              <div className="space-y-2 text-sm text-slate-700">
-                <p>Progress: <strong>{selectedCourseInfo.course.progress ?? 0}%</strong></p>
-                <p>Enrollment: <strong>{selectedCourseInfo.course.enrolledStudents}</strong></p>
-                <p>This panel shows course analytics and completion trends.</p>
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
-      ) : null}
-=======
       <Dialog open={isFacilitatorDialogOpen} onOpenChange={setIsFacilitatorDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -589,7 +535,6 @@ export default function AdminCoursesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
     </div>
   )
 }

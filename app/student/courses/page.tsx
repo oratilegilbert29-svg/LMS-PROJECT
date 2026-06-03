@@ -37,7 +37,7 @@ export default function StudentCoursesPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {enrolledCourses.map((course) => (
             <Card key={course.id} className="overflow-hidden">
-              <div className="h-32 bg-gradient-to-r from-[#0d4f4f] to-[#1a6b6b]" />
+              <div className="h-32 bg-gradient-to-r from-[#005792] to-[#00437a]" />
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
@@ -66,7 +66,7 @@ export default function StudentCoursesPage() {
                   </div>
                   <Progress value={course.progress} className="h-2" />
                 </div>
-                <Button className="w-full bg-[#0d4f4f] hover:bg-[#0a3d3d]">
+                <Button className="w-full bg-[#005792] hover:bg-[#00437a]">
                   Continue Learning
                 </Button>
               </CardContent>

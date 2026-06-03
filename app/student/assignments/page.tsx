@@ -81,7 +81,7 @@ export default function StudentAssignmentsPage() {
                   </Badge>
                   <p className="mt-1 text-xs text-gray-500">Max: {assignment.maxGrade} points</p>
                 </div>
-                <Button className="bg-[#0d4f4f] hover:bg-[#0a3d3d]">Submit</Button>
+                <Button className="bg-[#005792] hover:bg-[#00437a]">Submit</Button>
               </div>
             </div>
           ))}

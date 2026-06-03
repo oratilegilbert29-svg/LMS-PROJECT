@@ -108,11 +108,11 @@ export default function StudentMessagesPage() {
                 key={conv.id}
                 onClick={() => setSelectedConversation(conv)}
                 className={`cursor-pointer rounded-lg p-3 transition-colors hover:bg-muted ${
-                  selectedConversation.id === conv.id ? "bg-[#0d4f4f]/10 border border-[#0d4f4f]" : ""
+                  selectedConversation.id === conv.id ? "bg-[#005792]/10 border border-[#005792]" : ""
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0d4f4f] text-sm font-semibold text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#005792] text-sm font-semibold text-white">
                     {conv.name
                       .split(" ")
                       .map((n) => n[0])
@@ -123,11 +123,11 @@ export default function StudentMessagesPage() {
                       <p className="font-medium text-foreground">{conv.name}</p>
                       <span className="text-xs text-muted-foreground">{conv.time}</span>
                     </div>
-                    <p className="text-xs text-[#0d4f4f]">{conv.course}</p>
+                    <p className="text-xs text-[#005792]">{conv.course}</p>
                     <div className="flex items-center justify-between">
                       <p className="truncate text-sm text-muted-foreground">{conv.lastMessage}</p>
                       {conv.unread && (
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0d4f4f] text-xs text-white">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#005792] text-xs text-white">
                           1
                         </span>
                       )}
@@ -143,7 +143,7 @@ export default function StudentMessagesPage() {
         <Card className="flex flex-col lg:col-span-2">
           <CardHeader className="border-b">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0d4f4f] text-sm font-semibold text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#005792] text-sm font-semibold text-white">
                 {selectedConversation.name
                   .split(" ")
                   .map((n) => n[0])
@@ -168,7 +168,7 @@ export default function StudentMessagesPage() {
                   <div
                     className={`max-w-[70%] rounded-lg p-3 ${
                       message.sender === "student"
-                        ? "bg-[#0d4f4f] text-white"
+                        ? "bg-[#005792] text-white"
                         : "bg-muted text-foreground"
                     }`}
                   >
@@ -196,7 +196,7 @@ export default function StudentMessagesPage() {
                   onKeyDown={handleKeyPress}
                 />
                 <Button 
-                  className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
+                  className="bg-[#005792] hover:bg-[#00437a]"
                   onClick={handleSendMessage}
                 >
                   <Send className="h-4 w-4" />

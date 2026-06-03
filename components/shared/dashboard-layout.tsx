@@ -25,14 +25,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="min-h-screen bg-gray-50">
       <Sidebar isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
       <Navbar onMenuClick={toggleMobileMenu} />
-      
+
       {isMobile && isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm"
           onClick={closeMobileMenu}
         />
       )}
-      
+
       <main className="lg:ml-64 pt-16">
         <div className="p-6">{children}</div>
       </main>

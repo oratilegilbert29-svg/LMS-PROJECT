@@ -177,7 +177,7 @@ export default function FacilitatorAssessmentsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Assessments</h1>
           <p className="text-gray-600">Create quizzes, tests, and track assessment content for your courses.</p>
         </div>
-        <Button className="gap-2 bg-[#0f3b92] hover:bg-[#0d3675]" onClick={() => setShowForm(true)}>
+        <Button className="gap-2 bg-[#005792] hover:bg-[#00437a]" onClick={() => setShowForm(true)}>
           <Plus className="h-4 w-4" />
           New Assessment
         </Button>
@@ -348,7 +348,7 @@ export default function FacilitatorAssessmentsPage() {
               <Button variant="outline" onClick={() => { setShowForm(false); resetForm() }}>
                 Cancel
               </Button>
-              <Button className="bg-[#0f3b92] hover:bg-[#0d3675]" onClick={handleSaveAssessment}>
+              <Button className="bg-[#005792] hover:bg-[#00437a]" onClick={handleSaveAssessment}>
                 {editingId ? "Update Assessment" : "Create Assessment"}
               </Button>
             </div>

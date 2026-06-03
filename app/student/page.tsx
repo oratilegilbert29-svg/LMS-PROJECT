@@ -75,7 +75,7 @@ export default function StudentDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">Enrolled Courses</CardTitle>
-            <BookOpen className="h-4 w-4 text-[#0d4f4f]" />
+            <BookOpen className="h-4 w-4 text-[#005792]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.enrolledCourses}</div>
@@ -126,7 +126,7 @@ export default function StudentDashboard() {
               <CardDescription>Continue where you left off</CardDescription>
             </div>
             <Link href="/student/courses">
-              <Button variant="ghost" size="sm" className="gap-1 text-[#0d4f4f]">
+              <Button variant="ghost" size="sm" className="gap-1 text-[#005792]">
                 View All <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -137,8 +137,8 @@ export default function StudentDashboard() {
                 key={course.id}
                 className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#0d4f4f]/10">
-                  <BookOpen className="h-6 w-6 text-[#0d4f4f]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#005792]/10">
+                  <BookOpen className="h-6 w-6 text-[#005792]" />
                 </div>
                 <div className="flex-1">
                   <h4 className="font-medium">{course.title}</h4>
@@ -148,11 +148,11 @@ export default function StudentDashboard() {
                     <span className="text-xs font-medium text-gray-500">{course.progress}%</span>
                   </div>
                 </div>
-                <Link href={`/student/courses/${course.id}`}>
-                  <Button size="sm" className="bg-[#005792] hover:bg-[#004a7a]">
-                    Continue
-                  </Button>
-                </Link>
+                  <Link href={`/student/courses/${course.id}`}>
+                    <Button size="sm" className="bg-[#005792] hover:bg-[#004a7a]">
+                      Continue
+                    </Button>
+                  </Link>
               </div>
             ))}
           </CardContent>

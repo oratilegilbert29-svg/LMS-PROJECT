@@ -21,7 +21,7 @@ export default function StudentGradesPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">Overall GPA</CardTitle>
-            <Award className="h-4 w-4 text-[#0d4f4f]" />
+            <Award className="h-4 w-4 text-[#005792]" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">3.7</div>

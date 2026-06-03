@@ -3,29 +3,64 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { mockAssignments } from "@/lib/mock-data"
-import { Plus, FileText, Calendar, Users, Edit, MoreHorizontal, X } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { mockAssignments, mockCourses } from "@/lib/mock-data"
+import { Plus, FileText, Calendar, Users, Edit, MoreHorizontal, Trash2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
 export default function FacilitatorAssignmentsPage() {
-  const [showAssignmentForm, setShowAssignmentForm] = useState(false)
-  const [assignmentTitle, setAssignmentTitle] = useState("")
-  const [assignmentCourse, setAssignmentCourse] = useState("")
-  const [assignmentDue, setAssignmentDue] = useState("")
-  const [assignmentDetails, setAssignmentDetails] = useState("")
+  const router = useRouter()
+  const [assignments, setAssignments] = useState(mockAssignments)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [newTitle, setNewTitle] = useState("")
+  const [newCourse, setNewCourse] = useState("")
+  const [newDescription, setNewDescription] = useState("")
 
-  const handleAssignmentAction = (assignmentTitle: string, action: string) => {
-    alert(`${action} for ${assignmentTitle}`)
+  const myCourses = mockCourses.filter(c => c.instructor === "Mike Facilitator")
+
+  const handleCreateAssignment = () => {
+    if (!newTitle || !newCourse) return
+    const assignment = {
+      id: assignments.length + 1,
+      title: newTitle,
+      courseName: newCourse,
+      dueDate: new Date(Date.now() + 14 * 86400000).toISOString(),
+      status: "active" as const,
+      maxGrade: 100,
+    }
+    setAssignments([...assignments, assignment])
+    setIsDialogOpen(false)
+    setNewTitle("")
+    setNewCourse("")
+    setNewDescription("")
   }
+
+  const handleDeleteAssignment = (id: number) => {
+    setAssignments(assignments.filter(a => a.id !== id))
+  }
+
+  const totalAssignments = assignments.length
+  const activeAssignments = assignments.filter(a => a.status === "active").length
+  const totalSubmissions = 156
+  const pendingReview = 23
 
   return (
     <div className="space-y-6">
@@ -34,84 +69,59 @@ export default function FacilitatorAssignmentsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Assignments</h1>
           <p className="text-gray-500">Create and manage course assignments</p>
         </div>
-        <Button
-          className="gap-2 bg-[#0f3b92] hover:bg-[#0d3675]"
-          onClick={() => setShowAssignmentForm(true)}
-        >
-          <Plus className="h-4 w-4" />
-          Create Assignment
-        </Button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 bg-[#005792] hover:bg-[#00437a]">
+              <Plus className="w-4 h-4 mr-2" />
+              Create Assignment
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Assignment</DialogTitle>
+              <DialogDescription>Add a new assignment for your students.</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Assignment Title</Label>
+                <Input
+                  id="title"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="e.g. Week 5 Homework"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="course">Course</Label>
+                <select
+                  id="course"
+                  value={newCourse}
+                  onChange={(e) => setNewCourse(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Select course</option>
+                  {myCourses.map((course) => (
+                    <option key={course.id} value={course.title}>{course.title}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  placeholder="Brief description of the assignment"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleCreateAssignment} className="bg-[#005792] hover:bg-[#00437a]">Create</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
-
-      {showAssignmentForm && (
-        <Card className="rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">Create Assignment</h2>
-              <p className="text-sm text-gray-500">Set assignment details and publish for your class.</p>
-            </div>
-            <Button variant="ghost" size="icon" onClick={() => setShowAssignmentForm(false)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="grid gap-4 py-4 sm:grid-cols-3">
-            <div className="sm:col-span-3">
-              <Label htmlFor="assign-title">Title</Label>
-              <Input
-                id="assign-title"
-                value={assignmentTitle}
-                onChange={(event) => setAssignmentTitle(event.target.value)}
-                placeholder="Assignment title"
-              />
-            </div>
-            <div>
-              <Label htmlFor="assign-course">Course</Label>
-              <Input
-                id="assign-course"
-                value={assignmentCourse}
-                onChange={(event) => setAssignmentCourse(event.target.value)}
-                placeholder="Course name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="assign-due">Due Date</Label>
-              <Input
-                id="assign-due"
-                type="date"
-                value={assignmentDue}
-                onChange={(event) => setAssignmentDue(event.target.value)}
-              />
-            </div>
-            <div className="sm:col-span-3">
-              <Label htmlFor="assign-details">Details</Label>
-              <Textarea
-                id="assign-details"
-                value={assignmentDetails}
-                onChange={(event) => setAssignmentDetails(event.target.value)}
-                placeholder="Provide instructions or grading notes"
-                className="h-24"
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setShowAssignmentForm(false)}>
-              Cancel
-            </Button>
-            <Button
-              className="bg-[#0f3b92] hover:bg-[#0d3675]"
-              onClick={() => {
-                setAssignmentTitle("")
-                setAssignmentCourse("")
-                setAssignmentDue("")
-                setAssignmentDetails("")
-                setShowAssignmentForm(false)
-              }}
-            >
-              Publish Assignment
-            </Button>
-          </div>
-        </Card>
-      )}
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
@@ -120,7 +130,7 @@ export default function FacilitatorAssignmentsPage() {
             <CardTitle className="text-sm font-medium text-gray-500">Total Assignments</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">24</div>
+            <div className="text-2xl font-bold">{totalAssignments}</div>
           </CardContent>
         </Card>
         <Card>
@@ -128,7 +138,7 @@ export default function FacilitatorAssignmentsPage() {
             <CardTitle className="text-sm font-medium text-gray-500">Active</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">12</div>
+            <div className="text-2xl font-bold text-green-600">{activeAssignments}</div>
           </CardContent>
         </Card>
         <Card>
@@ -136,7 +146,7 @@ export default function FacilitatorAssignmentsPage() {
             <CardTitle className="text-sm font-medium text-gray-500">Submissions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">156</div>
+            <div className="text-2xl font-bold text-blue-600">{totalSubmissions}</div>
           </CardContent>
         </Card>
         <Card>
@@ -144,7 +154,7 @@ export default function FacilitatorAssignmentsPage() {
             <CardTitle className="text-sm font-medium text-gray-500">Pending Review</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">23</div>
+            <div className="text-2xl font-bold text-orange-600">{pendingReview}</div>
           </CardContent>
         </Card>
       </div>
@@ -156,14 +166,14 @@ export default function FacilitatorAssignmentsPage() {
           <CardDescription>Manage assignments across your courses</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {mockAssignments.map((assignment) => (
+          {assignments.map((assignment) => (
             <div
               key={assignment.id}
               className="flex items-center justify-between rounded-lg border p-4"
             >
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#0d4f4f]/10">
-                  <FileText className="h-6 w-6 text-[#0d4f4f]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#005792]/10">
+                  <FileText className="h-6 w-6 text-[#005792]" />
                 </div>
                 <div>
                   <h4 className="font-medium">{assignment.title}</h4>
@@ -200,12 +210,23 @@ export default function FacilitatorAssignmentsPage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/facilitator/grading")}>
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem>View Submissions</DropdownMenuItem>
-                    <DropdownMenuItem>Grade All</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/facilitator/grading")}>
+                      View Submissions
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/facilitator/grading")}>
+                      Grade All
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteAssignment(assignment.id)}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
