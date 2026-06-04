@@ -148,7 +148,7 @@ export default function StudentDashboard() {
                     <span className="text-xs font-medium text-gray-500">{course.progress}%</span>
                   </div>
                 </div>
-                <Link href={`/student/courses/${course.id}`}>
+                 <Link href={`/student/courses/${course.id}`}>
                   <Button size="sm" className="bg-[#005792] hover:bg-[#004a7a]">
                     Continue
                   </Button>

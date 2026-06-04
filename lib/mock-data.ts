@@ -63,6 +63,24 @@ export interface FacilitatorStats {
   averageRating: number
 }
 
+export interface Module {
+  id: string
+  title: string
+  courseId: string
+  lessons: number
+  completed: number
+  duration: string
+  locked: boolean
+}
+
+export interface Resource {
+  id: string
+  title: string
+  courseId: string
+  type: string
+  url: string
+}
+
 // Mock Courses
 export const mockCourses: Course[] = [
   {
@@ -165,6 +183,144 @@ export const mockAssignments: Assignment[] = [
     dueDate: "2024-02-18",
     status: "pending",
     maxGrade: 50,
+  },
+]
+
+// Mock Modules
+export const mockModules: Module[] = [
+  {
+    id: "1-1",
+    title: "Introduction to the Course",
+    courseId: "1",
+    lessons: 5,
+    completed: 3,
+    duration: "45 min",
+    locked: false,
+  },
+  {
+    id: "1-2",
+    title: "Core Concepts",
+    courseId: "1",
+    lessons: 8,
+    completed: 2,
+    duration: "2 hours",
+    locked: false,
+  },
+  {
+    id: "1-3",
+    title: "Advanced Topics",
+    courseId: "1",
+    lessons: 6,
+    completed: 0,
+    duration: "1.5 hours",
+    locked: false,
+  },
+  {
+    id: "1-4",
+    title: "Project & Assessment",
+    courseId: "1",
+    lessons: 3,
+    completed: 0,
+    duration: "3 hours",
+    locked: true,
+  },
+  {
+    id: "2-1",
+    title: "React Fundamentals",
+    courseId: "2",
+    lessons: 6,
+    completed: 4,
+    duration: "2.5 hours",
+    locked: false,
+  },
+  {
+    id: "2-2",
+    title: "State Management",
+    courseId: "2",
+    lessons: 5,
+    completed: 1,
+    duration: "2 hours",
+    locked: false,
+  },
+  {
+    id: "3-1",
+    title: "Statistics Basics",
+    courseId: "3",
+    lessons: 7,
+    completed: 7,
+    duration: "3 hours",
+    locked: false,
+  },
+  {
+    id: "3-2",
+    title: "Data Analysis",
+    courseId: "3",
+    lessons: 8,
+    completed: 8,
+    duration: "3.5 hours",
+    locked: false,
+  },
+  {
+    id: "3-3",
+    title: "Machine Learning Intro",
+    courseId: "3",
+    lessons: 6,
+    completed: 5,
+    duration: "3 hours",
+    locked: false,
+  },
+]
+
+// Mock Resources
+export const mockResources: Resource[] = [
+  {
+    id: "1-r1",
+    title: "HTML5 Reference Guide",
+    courseId: "1",
+    type: "PDF",
+    url: "/resources/html5-guide.pdf",
+  },
+  {
+    id: "1-r2",
+    title: "CSS Flexbox Tutorial",
+    courseId: "1",
+    type: "Video",
+    url: "https://example.com/flexbox",
+  },
+  {
+    id: "1-r3",
+    title: "JavaScript Cheat Sheet",
+    courseId: "1",
+    type: "PDF",
+    url: "/resources/js-cheat-sheet.pdf",
+  },
+  {
+    id: "2-r1",
+    title: "React Documentation",
+    courseId: "2",
+    type: "Link",
+    url: "https://react.dev",
+  },
+  {
+    id: "2-r2",
+    title: "Redux Patterns Guide",
+    courseId: "2",
+    type: "PDF",
+    url: "/resources/redux-patterns.pdf",
+  },
+  {
+    id: "3-r1",
+    title: "Python Data Science Libraries",
+    courseId: "3",
+    type: "Link",
+    url: "https://numpy.org",
+  },
+  {
+    id: "3-r2",
+    title: "Statistics Handbook",
+    courseId: "3",
+    type: "PDF",
+    url: "/resources/statistics-handbook.pdf",
   },
 ]
 
