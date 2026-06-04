@@ -7,17 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
-<<<<<<< HEAD
-import { Bell, Settings, Database, Mail, Shield, Globe, Palette } from "lucide-react"
-
-export default function AdminSettingsPage() {
-  const handleSave = (section: string) => {
-    alert(`${section} saved successfully.`)
-  }
-
-=======
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Lock, Bell, Palette, Upload } from "lucide-react"
 import { toast } from "sonner"
 
@@ -79,7 +70,6 @@ export default function Settings() {
     }, 500)
   }
 
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
   return (
     <div className="p-8 space-y-6">
       <div>
@@ -87,44 +77,6 @@ export default function Settings() {
         <p className="text-muted-foreground mt-1">Manage your account settings and preferences</p>
       </div>
 
-<<<<<<< HEAD
-      <div className="grid gap-6">
-        {/* General Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-[#0d4f4f]" />
-              General Settings
-            </CardTitle>
-            <CardDescription>Basic system configuration</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="site-name">Site Name</Label>
-                <Input id="site-name" defaultValue="Learning Management System" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="site-url">Site URL</Label>
-                <Input id="site-url" defaultValue="https://lms.example.com" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Site Description</Label>
-              <Input
-                id="description"
-                defaultValue="A comprehensive learning management system"
-              />
-            </div>
-            <Button
-              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
-              onClick={() => handleSave("General settings")}
-            >
-              Save Changes
-            </Button>
-          </CardContent>
-        </Card>
-=======
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList>
           <TabsTrigger value="profile" className="gap-2">
@@ -144,7 +96,6 @@ export default function Settings() {
             Appearance
           </TabsTrigger>
         </TabsList>
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
 
         <TabsContent value="profile">
           <Card>
@@ -168,63 +119,6 @@ export default function Settings() {
                   </p>
                 </div>
               </div>
-<<<<<<< HEAD
-              <div className="space-y-2">
-                <Label htmlFor="smtp-port">SMTP Port</Label>
-                <Input id="smtp-port" placeholder="587" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Enable Email Notifications</p>
-                <p className="text-sm text-gray-500">Send system emails to users</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            <Button
-              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
-              onClick={() => handleSave("Email settings")}
-            >
-              Save Email Settings
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Notification Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-[#0d4f4f]" />
-              Notification Settings
-            </CardTitle>
-            <CardDescription>Configure notification alerts for admins and users.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">System Alerts</p>
-                <p className="text-sm text-gray-500">Notify admins about system health and errors.</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Enrollment Updates</p>
-                <p className="text-sm text-gray-500">Receive alerts when new users enroll.</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Email Notifications</p>
-                <p className="text-sm text-gray-500">Enable email-based notification delivery.</p>
-              </div>
-              <Switch />
-            </div>
-          </CardContent>
-        </Card>
-=======
->>>>>>> 86379045a3875e29d4f8e8049d195aeeefbc8afc
 
               <Separator />
 

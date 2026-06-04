@@ -11,10 +11,6 @@ import { User, Bell, Shield, Palette } from "lucide-react"
 export default function StudentSettingsPage() {
   const { user } = useAuth()
 
-  const handleSave = (section: string) => {
-    alert(`${section} saved successfully.`)
-  }
-
   return (
     <div className="space-y-6">
       <div>
@@ -27,14 +23,14 @@ export default function StudentSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5 text-[#0d4f4f]" />
+              <User className="h-5 w-5 text-[#005792]" />
               Profile Settings
             </CardTitle>
             <CardDescription>Update your personal information</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#0d4f4f] text-2xl font-bold text-white">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#005792] text-2xl font-bold text-white">
                 {user?.name
                   .split(" ")
                   .map((n) => n[0])
@@ -52,12 +48,7 @@ export default function StudentSettingsPage() {
                 <Input id="email" type="email" defaultValue={user?.email} />
               </div>
             </div>
-            <Button
-              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
-              onClick={() => handleSave("Profile settings")}
-            >
-              Save Changes
-            </Button>
+            <Button className="bg-[#005792] hover:bg-[#00437a]">Save Changes</Button>
           </CardContent>
         </Card>
 
@@ -65,7 +56,7 @@ export default function StudentSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-[#0d4f4f]" />
+              <Bell className="h-5 w-5 text-[#005792]" />
               Notifications
             </CardTitle>
             <CardDescription>Configure how you receive notifications</CardDescription>
@@ -106,7 +97,7 @@ export default function StudentSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-[#0d4f4f]" />
+              <Shield className="h-5 w-5 text-[#005792]" />
               Security
             </CardTitle>
             <CardDescription>Manage your account security</CardDescription>
@@ -126,12 +117,7 @@ export default function StudentSettingsPage() {
                 <Input id="confirm-password" type="password" />
               </div>
             </div>
-            <Button
-              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
-              onClick={() => handleSave("Password update")}
-            >
-              Update Password
-            </Button>
+            <Button className="bg-[#005792] hover:bg-[#00437a]">Update Password</Button>
           </CardContent>
         </Card>
 
@@ -139,7 +125,7 @@ export default function StudentSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5 text-[#0d4f4f]" />
+              <Palette className="h-5 w-5 text-[#005792]" />
               Appearance
             </CardTitle>
             <CardDescription>Customize your experience</CardDescription>

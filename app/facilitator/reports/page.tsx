@@ -23,7 +23,7 @@ export default function FacilitatorReportsPage() {
           <p className="text-gray-600">View course performance, student progress, and assessment reports.</p>
         </div>
         <Button
-          className="gap-2 bg-[#0f3b92] hover:bg-[#0d3675]"
+          className="gap-2 bg-[#005792] hover:bg-[#00437a]"
           onClick={() => setGenerated(true)}
         >
           <FileText className="h-4 w-4" />
@@ -38,7 +38,7 @@ export default function FacilitatorReportsPage() {
               <CardTitle>Report Generated</CardTitle>
               <CardDescription>Your course analytics are now ready to review.</CardDescription>
             </div>
-            <span className="rounded-full bg-[#0f3b92] px-3 py-1 text-sm font-semibold text-white">
+            <span className="rounded-full bg-[#005792] px-3 py-1 text-sm font-semibold text-white">
               Updated
             </span>
           </div>

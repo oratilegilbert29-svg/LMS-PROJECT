@@ -78,7 +78,45 @@ export default function StudentCoursesPage() {
         <h2 className="mb-4 text-lg font-semibold">Enrolled Courses</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {enrolledCourses.map((course) => (
+<<<<<<< HEAD
             <CourseCard key={course.id} course={course} isEnrolled={true} />
+=======
+            <Card key={course.id} className="overflow-hidden">
+              <div className="h-32 bg-gradient-to-r from-[#005792] to-[#00437a]" />
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-lg">{course.title}</CardTitle>
+                    <CardDescription>{course.instructor}</CardDescription>
+                  </div>
+                  <Badge className="bg-green-100 text-green-700">Enrolled</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600">{course.description}</p>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    {course.duration}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    {course.enrolledStudents}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Progress</span>
+                    <span className="font-medium">{course.progress}%</span>
+                  </div>
+                  <Progress value={course.progress} className="h-2" />
+                </div>
+                <Button className="w-full bg-[#005792] hover:bg-[#00437a]">
+                  Continue Learning
+                </Button>
+              </CardContent>
+            </Card>
+>>>>>>> d5fd3819bd9b658203cb59ce845af23037f1d58b
           ))}
         </div>
       </div>

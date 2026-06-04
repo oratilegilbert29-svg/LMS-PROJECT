@@ -1,11 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { Bell, Search, Menu, X, AlertCircle, CheckCircle, Info } from "lucide-react"
 import { Input } from "@/components/ui/input"
-
 import { Button } from "@/components/ui/button"
 import {
   Popover,
@@ -99,8 +97,8 @@ export function Navbar({ onMenuClick }: NavbarProps) {
 
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-medium text-slate-900">{user.name}</p>
-              <p className="text-xs capitalize text-slate-500">{user.role}</p>
+              <p className="text-sm font-medium text-white">{user.name}</p>
+              <p className="text-xs capitalize text-teal-200">{user.role}</p>
             </div>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-700 text-sm font-semibold text-white">
               {user.name.split(" ").map((n) => n[0]).join("")}

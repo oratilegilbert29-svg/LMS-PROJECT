@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,9 +12,28 @@ import { User, Bell, Shield, BookOpen } from "lucide-react"
 
 export default function FacilitatorSettingsPage() {
   const { user } = useAuth()
+  const [name, setName] = useState(user?.name || "")
+  const [email, setEmail] = useState(user?.email || "")
+  const [bio, setBio] = useState("Experienced web developer with 10+ years in the industry. Passionate about teaching and helping students achieve their goals.")
+  const [expertise, setExpertise] = useState("Web Development, React, JavaScript, Node.js")
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [saved, setSaved] = useState(false)
 
-  const handleSave = (section: string) => {
-    alert(`${section} saved successfully.`)
+  const handleSaveProfile = () => {
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  const handleUpdatePassword = () => {
+    if (!currentPassword || !newPassword || !confirmPassword) return
+    if (newPassword !== confirmPassword) return
+    setCurrentPassword("")
+    setNewPassword("")
+    setConfirmPassword("")
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
   }
 
   return (
@@ -28,29 +48,29 @@ export default function FacilitatorSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5 text-[#0d4f4f]" />
+              <User className="h-5 w-5 text-[#005792]" />
               Profile Settings
             </CardTitle>
             <CardDescription>Update your professional information</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#0d4f4f] text-2xl font-bold text-white">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#005792] text-2xl font-bold text-white">
                 {user?.name
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </div>
-              <Button variant="outline">Change Photo</Button>
+              <Button variant="outline" onClick={() => alert("Photo upload dialog would open here")}>Change Photo</Button>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input id="name" defaultValue={user?.name} />
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue={user?.email} />
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
             </div>
             <div className="space-y-2">
@@ -58,21 +78,20 @@ export default function FacilitatorSettingsPage() {
               <Textarea
                 id="bio"
                 placeholder="Tell students about yourself..."
-                defaultValue="Experienced web developer with 10+ years in the industry. Passionate about teaching and helping students achieve their goals."
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="expertise">Areas of Expertise</Label>
               <Input
                 id="expertise"
-                defaultValue="Web Development, React, JavaScript, Node.js"
+                value={expertise}
+                onChange={(e) => setExpertise(e.target.value)}
               />
             </div>
-            <Button
-              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
-              onClick={() => handleSave("Profile settings")}
-            >
-              Save Changes
+            <Button className="bg-[#005792] hover:bg-[#00437a]" onClick={handleSaveProfile}>
+              {saved ? "Saved!" : "Save Changes"}
             </Button>
           </CardContent>
         </Card>
@@ -81,7 +100,7 @@ export default function FacilitatorSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-[#0d4f4f]" />
+              <BookOpen className="h-5 w-5 text-[#005792]" />
               Teaching Preferences
             </CardTitle>
             <CardDescription>Configure your teaching settings</CardDescription>
@@ -115,7 +134,7 @@ export default function FacilitatorSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-[#0d4f4f]" />
+              <Bell className="h-5 w-5 text-[#005792]" />
               Notifications
             </CardTitle>
             <CardDescription>Configure notification preferences</CardDescription>
@@ -149,7 +168,7 @@ export default function FacilitatorSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-[#0d4f4f]" />
+              <Shield className="h-5 w-5 text-[#005792]" />
               Security
             </CardTitle>
             <CardDescription>Manage your account security</CardDescription>
@@ -158,23 +177,35 @@ export default function FacilitatorSettingsPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="current-password">Current Password</Label>
-                <Input id="current-password" type="password" />
+                <Input
+                  id="current-password"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
               </div>
               <div />
               <div className="space-y-2">
                 <Label htmlFor="new-password">New Password</Label>
-                <Input id="new-password" type="password" />
+                <Input
+                  id="new-password"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
-                <Input id="confirm-password" type="password" />
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
               </div>
             </div>
-            <Button
-              className="bg-[#0d4f4f] hover:bg-[#0a3d3d]"
-              onClick={() => handleSave("Password update")}
-            >
-              Update Password
+            <Button className="bg-[#005792] hover:bg-[#00437a]" onClick={handleUpdatePassword}>
+              {saved ? "Updated!" : "Update Password"}
             </Button>
           </CardContent>
         </Card>

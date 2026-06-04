@@ -5,11 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { useAuth } from "@/lib/auth-context"
-import { mockFacilitatorStats, mockCourses, mockSubmissions } from "@/lib/mock-data"
+import { mockFacilitatorStats, mockCourses, mockSubmissions, mockAssignments } from "@/lib/mock-data"
 import {
   Users,
   BookOpen,
@@ -22,16 +22,35 @@ import {
   X,
 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function FacilitatorDashboard() {
+  const { user } = useAuth()
+  const router = useRouter()
   const [showAssignmentForm, setShowAssignmentForm] = useState(false)
   const [assignmentTitle, setAssignmentTitle] = useState("")
   const [assignmentCourse, setAssignmentCourse] = useState("")
   const [assignmentDescription, setAssignmentDescription] = useState("")
-  const { user } = useAuth()
   const stats = mockFacilitatorStats
   const myCourses = mockCourses.filter((c) => c.instructor === "Mike Facilitator")
   const pendingSubmissions = mockSubmissions.filter((s) => s.status === "pending")
+
+  const handleCreateAssignment = () => {
+    if (!assignmentTitle || !assignmentCourse) return
+    const newAssignment = {
+      id: mockAssignments.length + 1,
+      title: assignmentTitle,
+      courseName: assignmentCourse,
+      dueDate: new Date().toISOString(),
+      status: "active",
+      maxGrade: 100,
+    }
+    mockAssignments.push(newAssignment as any)
+    setAssignmentTitle("")
+    setAssignmentCourse("")
+    setAssignmentDescription("")
+    setShowAssignmentForm(false)
+  }
 
   return (
     <div className="space-y-6">
@@ -42,7 +61,7 @@ export default function FacilitatorDashboard() {
           <p className="text-gray-500">Welcome back, {user?.name}. Here&apos;s your teaching overview.</p>
         </div>
         <Button
-          className="gap-2 bg-[#0f3b92] hover:bg-[#0d3675]"
+          className="gap-2 bg-[#005792] hover:bg-[#00437a]"
           onClick={() => setShowAssignmentForm(true)}
         >
           <Plus className="h-4 w-4" />
@@ -61,55 +80,43 @@ export default function FacilitatorDashboard() {
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <div className="grid gap-4 py-4 sm:grid-cols-3">
-            <div className="sm:col-span-3">
-              <Label htmlFor="assignment-title">Title</Label>
+          <div className="mt-4 space-y-3">
+            <div>
+              <Label htmlFor="assignment-title">Assignment Title</Label>
               <Input
                 id="assignment-title"
                 value={assignmentTitle}
-                onChange={(event) => setAssignmentTitle(event.target.value)}
-                placeholder="Enter assignment title"
+                onChange={(e) => setAssignmentTitle(e.target.value)}
+                placeholder="e.g. Week 5 Homework"
               />
             </div>
             <div>
               <Label htmlFor="assignment-course">Course</Label>
-              <Input
+              <select
                 id="assignment-course"
                 value={assignmentCourse}
-                onChange={(event) => setAssignmentCourse(event.target.value)}
-                placeholder="Course name"
-              />
+                onChange={(e) => setAssignmentCourse(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Select course</option>
+                {myCourses.map((course) => (
+                  <option key={course.id} value={course.title}>{course.title}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <Label htmlFor="assignment-due">Due Date</Label>
-              <Input id="assignment-due" type="date" />
-            </div>
-            <div className="sm:col-span-3">
               <Label htmlFor="assignment-desc">Description</Label>
               <Textarea
                 id="assignment-desc"
                 value={assignmentDescription}
-                onChange={(event) => setAssignmentDescription(event.target.value)}
-                placeholder="Write a short assignment description"
-                className="h-24"
+                onChange={(e) => setAssignmentDescription(e.target.value)}
+                placeholder="Brief description of the assignment"
               />
             </div>
-          </div>
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <Button variant="outline" onClick={() => setShowAssignmentForm(false)}>
-              Cancel
-            </Button>
-            <Button
-              className="bg-[#0f3b92] hover:bg-[#0d3675]"
-              onClick={() => {
-                setShowAssignmentForm(false)
-                setAssignmentTitle("")
-                setAssignmentCourse("")
-                setAssignmentDescription("")
-              }}
-            >
-              Save Assignment
-            </Button>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowAssignmentForm(false)}>Cancel</Button>
+              <Button className="bg-[#005792] hover:bg-[#00437a]" onClick={handleCreateAssignment}>Create Assignment</Button>
+            </div>
           </div>
         </Card>
       )}
@@ -119,7 +126,7 @@ export default function FacilitatorDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-[#0d4f4f]" />
+            <Users className="h-4 w-4 text-[#005792]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalStudents}</div>
@@ -173,7 +180,7 @@ export default function FacilitatorDashboard() {
               <CardDescription>Courses you are teaching</CardDescription>
             </div>
             <Link href="/facilitator/courses">
-              <Button variant="ghost" size="sm" className="gap-1 text-[#0d4f4f]">
+              <Button variant="ghost" size="sm" className="gap-1 text-[#005792]">
                 View All <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -186,8 +193,8 @@ export default function FacilitatorDashboard() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#0d4f4f]/10">
-                      <BookOpen className="h-6 w-6 text-[#0d4f4f]" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#005792]/10">
+                      <BookOpen className="h-6 w-6 text-[#005792]" />
                     </div>
                     <div>
                       <h4 className="font-medium">{course.title}</h4>
@@ -215,8 +222,8 @@ export default function FacilitatorDashboard() {
                       12 lessons
                     </span>
                   </div>
-                  <Button asChild size="sm" variant="outline">
-                    <Link href="/facilitator/courses">Manage</Link>
+                  <Button size="sm" variant="outline" onClick={() => router.push(`/facilitator/courses`)}>
+                    Manage
                   </Button>
                 </div>
               </div>
@@ -244,11 +251,13 @@ export default function FacilitatorDashboard() {
                   <span className="text-xs text-gray-400">
                     Submitted {new Date(submission.submittedAt).toLocaleDateString()}
                   </span>
-                  <Link href="/facilitator/grading" className="h-7">
-                    <Button asChild size="sm" className="h-full bg-[#0d4f4f] hover:bg-[#0a3d3d]">
-                      <span>Grade</span>
-                    </Button>
-                  </Link>
+                  <Button
+                    size="sm"
+                    className="h-7 bg-[#005792] hover:bg-[#00437a]"
+                    onClick={() => router.push("/facilitator/grading")}
+                  >
+                    Grade
+                  </Button>
                 </div>
               </div>
             ))}

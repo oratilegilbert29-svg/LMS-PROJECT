@@ -15,12 +15,12 @@ export default function StudentAnnouncementsPage() {
 
       <div className="space-y-4">
         {mockAnnouncements.map((announcement, index) => (
-          <Card key={announcement.id} className={index === 0 ? "border-[#0d4f4f]" : ""}>
+          <Card key={announcement.id} className={index === 0 ? "border-[#005792]" : ""}>
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                    index === 0 ? "bg-[#0d4f4f]" : "bg-gray-100"
+                    index === 0 ? "bg-[#005792]" : "bg-gray-100"
                   }`}>
                     <Bell className={`h-5 w-5 ${index === 0 ? "text-white" : "text-gray-500"}`} />
                   </div>
@@ -38,7 +38,7 @@ export default function StudentAnnouncementsPage() {
                   </div>
                 </div>
                 {index === 0 && (
-                  <Badge className="bg-[#0d4f4f]">New</Badge>
+                  <Badge className="bg-[#005792]">New</Badge>
                 )}
               </div>
             </CardHeader>

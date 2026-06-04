@@ -4,11 +4,29 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Progress } from "@/components/ui/progress"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { mockCourses } from "@/lib/mock-data"
-import { Plus, Users, FileText, Clock, Edit, MoreHorizontal, X, BarChart3 } from "lucide-react"
+import { Search, Filter } from "lucide-react"
+import { Plus, Users, FileText, MoreHorizontal, Trash2, Ban, Play, Pencil } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,62 +34,109 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-type Course = typeof mockCourses[number]
-
-type InfoMode = "manage" | "view" | "edit" | "analytics"
+interface Course {
+  id: string | number
+  title: string
+  description: string
+  instructor: string
+  duration: string
+  status: string
+  enrolledStudents: number
+  category: string
+  progress: number
+  startDate?: string
+  endDate?: string
+}
 
 export default function FacilitatorCoursesPage() {
-  const [courses, setCourses] = useState(() =>
-    mockCourses.filter((c) => c.instructor === "Mike Facilitator")
+  const [courses, setCourses] = useState<Course[]>(
+    mockCourses.filter((c) => c.instructor === "Mike Facilitator") as Course[]
   )
-  const [showCourseForm, setShowCourseForm] = useState(false)
-  const [selectedInfo, setSelectedInfo] = useState<{ id: string; mode: InfoMode } | null>(null)
-  const [courseTitle, setCourseTitle] = useState("")
-  const [courseDescription, setCourseDescription] = useState("")
-  const [courseDuration, setCourseDuration] = useState("")
-  const [courseCategory, setCourseCategory] = useState("")
-  const [courseStatus, setCourseStatus] = useState<"active" | "draft" | "archived">("draft")
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showFilters, setShowFilters] = useState(false)
+  const [filterStatus, setFilterStatus] = useState("all")
+  const [formTitle, setFormTitle] = useState("")
+  const [formDescription, setFormDescription] = useState("")
+  const [formDuration, setFormDuration] = useState("")
+  const [formStatus, setFormStatus] = useState("draft")
+  const [formStartDate, setFormStartDate] = useState("")
+  const [formEndDate, setFormEndDate] = useState("")
 
-  const resetCourseForm = () => {
-    setCourseTitle("")
-    setCourseDescription("")
-    setCourseDuration("")
-    setCourseCategory("")
-    setCourseStatus("draft")
+  const filteredCourses = courses.filter(course => {
+    if (searchQuery && !course.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
+    if (filterStatus !== "all" && course.status !== filterStatus) return false
+    return true
+  })
+
+  const resetForm = () => {
+    setFormTitle("")
+    setFormDescription("")
+    setFormDuration("")
+    setFormStatus("draft")
+    setFormStartDate("")
+    setFormEndDate("")
+    setEditingCourse(null)
   }
 
-  const handleCreateCourse = () => {
-    if (!courseTitle || !courseDescription || !courseDuration || !courseCategory) {
-      return
+  const openCreateDialog = () => {
+    resetForm()
+    setIsDialogOpen(true)
+  }
+
+  const openEditDialog = (course: Course) => {
+    setEditingCourse(course)
+    setFormTitle(course.title)
+    setFormDescription(course.description)
+    setFormDuration(course.duration)
+    setFormStatus(course.status)
+    setFormStartDate(course.startDate || "")
+    setFormEndDate(course.endDate || "")
+    setIsDialogOpen(true)
+  }
+
+  const handleSaveCourse = () => {
+    if (!formTitle) return
+    if (editingCourse) {
+      setCourses(courses.map(c =>
+        c.id === editingCourse.id
+          ? { ...c, title: formTitle, description: formDescription, duration: formDuration, status: formStatus, startDate: formStartDate, endDate: formEndDate }
+          : c
+      ))
+    } else {
+      const course: Course = {
+        id: courses.length + 1,
+        title: formTitle,
+        description: formDescription || "Course description pending",
+        instructor: "Mike Facilitator",
+        duration: formDuration || "TBD",
+        status: formStatus,
+        enrolledStudents: 0,
+        category: "General",
+        progress: 0,
+        startDate: formStartDate,
+        endDate: formEndDate,
+      }
+      setCourses([...courses, course])
     }
-
-    const newCourse: Course = {
-      id: `${courses.length + 1}`,
-      title: courseTitle,
-      description: courseDescription,
-      instructor: "Mike Facilitator",
-      duration: courseDuration,
-      category: courseCategory,
-      thumbnail: "/placeholder.svg?height=200&width=300",
-      status: courseStatus,
-      enrolledStudents: 0,
-      progress: 0,
-    }
-
-    setCourses((current) => [newCourse, ...current])
-    resetCourseForm()
-    setShowCourseForm(false)
+    setIsDialogOpen(false)
+    resetForm()
   }
 
-  const handleToggleInfo = (courseId: string, mode: InfoMode) => {
-    setSelectedInfo((current) =>
-      current?.id === courseId && current.mode === mode ? null : { id: courseId, mode }
-    )
+  const handleDeleteCourse = (id: string | number) => {
+    setCourses(courses.filter(c => c.id !== id))
   }
 
-  const handleViewDetails = (course: Course) => {
-    setSelectedInfo({ id: course.id, mode: "view" })
+  const handleToggleStatus = (id: string | number) => {
+    setCourses(courses.map(c =>
+      c.id === id
+        ? { ...c, status: c.status === "active" ? "suspended" : "active" }
+        : c
+    ))
   }
+
+  const totalStudents = courses.reduce((sum, c) => sum + c.enrolledStudents, 0)
 
   return (
     <div className="space-y-6">
@@ -80,86 +145,96 @@ export default function FacilitatorCoursesPage() {
           <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>
           <p className="text-gray-500">Manage the courses you teach</p>
         </div>
-        <Button className="gap-2 bg-[#0d4f4f] hover:bg-[#0a3d3d]" onClick={() => setShowCourseForm(true)}>
-          <Plus className="h-4 w-4" />
+        <Button className="gap-2 bg-[#005792] hover:bg-[#00437a]" onClick={openCreateDialog}>
+          <Plus className="w-4 h-4 mr-2" />
           Create Course
         </Button>
       </div>
 
-      {showCourseForm && (
-        <Card className="border border-slate-200 bg-slate-50 p-5 shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <CardTitle>Create a New Course</CardTitle>
-              <CardDescription>Fill in the course information to add it to your teaching dashboard.</CardDescription>
-            </div>
-            <Button variant="ghost" size="icon" onClick={() => { resetCourseForm(); setShowCourseForm(false) }}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="grid gap-4 py-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
+      {/* Create/Edit Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={(open) => { if (!open) resetForm(); setIsDialogOpen(open) }}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingCourse ? "Edit Course" : "Create New Course"}</DialogTitle>
+            <DialogDescription>
+              {editingCourse ? "Update course information." : "Add a new course to your teaching portfolio."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
               <Label htmlFor="course-title">Course Title</Label>
               <Input
                 id="course-title"
-                value={courseTitle}
-                onChange={(event) => setCourseTitle(event.target.value)}
-                placeholder="Enter course title"
+                value={formTitle}
+                onChange={(e) => setFormTitle(e.target.value)}
+                placeholder="e.g. Advanced React Patterns"
               />
             </div>
-            <div className="sm:col-span-2">
-              <Label htmlFor="course-description">Description</Label>
-              <Input
-                id="course-description"
-                value={courseDescription}
-                onChange={(event) => setCourseDescription(event.target.value)}
-                placeholder="Enter course summary"
+            <div className="space-y-2">
+              <Label htmlFor="course-desc">Description</Label>
+              <Textarea
+                id="course-desc"
+                value={formDescription}
+                onChange={(e) => setFormDescription(e.target.value)}
+                placeholder="Brief course description"
+                rows={3}
               />
             </div>
-            <div>
-              <Label htmlFor="course-duration">Duration</Label>
-              <Input
-                id="course-duration"
-                value={courseDuration}
-                onChange={(event) => setCourseDuration(event.target.value)}
-                placeholder="e.g. 8 weeks"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="course-duration">Duration</Label>
+                <Input
+                  id="course-duration"
+                  value={formDuration}
+                  onChange={(e) => setFormDuration(e.target.value)}
+                  placeholder="e.g. 8 weeks"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="course-status">Status</Label>
+                <Select value={formStatus} onValueChange={setFormStatus}>
+                  <SelectTrigger id="course-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="suspended">Suspended</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div>
-              <Label htmlFor="course-category">Category</Label>
-              <Input
-                id="course-category"
-                value={courseCategory}
-                onChange={(event) => setCourseCategory(event.target.value)}
-                placeholder="e.g. Development"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <Label htmlFor="course-status">Status</Label>
-              <select
-                id="course-status"
-                value={courseStatus}
-                onChange={(event) => setCourseStatus(event.target.value as "active" | "draft" | "archived")}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="active">Active</option>
-                <option value="draft">Draft</option>
-                <option value="archived">Archived</option>
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="course-start">Start Date</Label>
+                <Input
+                  id="course-start"
+                  type="date"
+                  value={formStartDate}
+                  onChange={(e) => setFormStartDate(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="course-end">End Date</Label>
+                <Input
+                  id="course-end"
+                  type="date"
+                  value={formEndDate}
+                  onChange={(e) => setFormEndDate(e.target.value)}
+                />
+              </div>
             </div>
           </div>
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => { resetCourseForm(); setShowCourseForm(false) }}>
-              Cancel
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { resetForm(); setIsDialogOpen(false) }}>Cancel</Button>
+            <Button onClick={handleSaveCourse} className="bg-[#005792] hover:bg-[#00437a]">
+              {editingCourse ? "Update Course" : "Create Course"}
             </Button>
-            <Button className="bg-[#0d4f4f] hover:bg-[#0a3d3d]" onClick={handleCreateCourse}>
-              Add Course
-            </Button>
-          </div>
-        </Card>
-      )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {/* Course Stats */}
+      {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
@@ -171,163 +246,132 @@ export default function FacilitatorCoursesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">Active</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{courses.filter(c => c.status === "active").length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">Draft</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{courses.filter(c => c.status === "draft").length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">Total Students</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {courses.reduce((acc, c) => acc + (c.enrolledStudents || 0), 0)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Active Courses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {courses.filter((c) => c.status === "active").length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Drafts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
-              {courses.filter((c) => c.status === "draft").length}
-            </div>
+            <div className="text-2xl font-bold">{totalStudents}</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Courses Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {courses.map((course) => (
+      {/* Search & Filter */}
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder="Search courses..."
+            className="pl-10"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Button variant="outline" className="gap-2" onClick={() => setShowFilters(!showFilters)}>
+          <Filter className="h-4 w-4" />
+          Filter
+        </Button>
+      </div>
+      {showFilters && (
+        <div className="flex gap-4 p-4 border rounded-lg bg-gray-50">
+          <div className="space-y-1">
+            <Label className="text-xs">Status</Label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            >
+              <option value="all">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="draft">Draft</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* Course List */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {filteredCourses.map((course) => (
           <Card key={course.id}>
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div>
+                <div className="flex-1">
                   <CardTitle>{course.title}</CardTitle>
-                  <CardDescription>{course.category}</CardDescription>
+                  <CardDescription>{course.duration}</CardDescription>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge
-                    className={
-                      course.status === "active"
-                        ? "bg-green-100 text-green-700"
-                        : course.status === "draft"
-                        ? "bg-orange-100 text-orange-700"
-                        : "bg-gray-100 text-gray-700"
-                    }
-                  >
-                    {course.status}
-                  </Badge>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleToggleInfo(course.id, "manage") }>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Manage Course
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleToggleInfo(course.id, "view") }>
-                        View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleToggleInfo(course.id, "analytics") }>
-                        <BarChart3 className="mr-2 h-4 w-4" />
-                        View Analytics
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleToggleInfo(course.id, "edit") }>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit Course
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => openEditDialog(course)}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleToggleStatus(course.id)}>
+                      {course.status === "active" || course.status === "Active" ? (
+                        <><Ban className="mr-2 h-4 w-4" />Suspend</>
+                      ) : (
+                        <><Play className="mr-2 h-4 w-4" />Activate</>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteCourse(course.id)}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600">{course.description}</p>
-
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span className="flex items-center gap-1">
-                  <Users className="h-4 w-4" />
-                  {course.enrolledStudents} students
-                </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  {course.duration}
-                </span>
-                <span className="flex items-center gap-1">
-                  <FileText className="h-4 w-4" />
-                  12 lessons
-                </span>
-              </div>
-
+              <p className="text-sm text-muted-foreground">{course.description}</p>
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Avg. Completion</span>
-                  <span className="font-medium">{course.progress ?? 0}%</span>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Course Progress</span>
+                  <span>{course.enrolledStudents} students</span>
                 </div>
-                <Progress value={course.progress ?? 0} className="h-2" />
+                <Progress value={course.progress} className="h-2" />
               </div>
-
-              <div className="flex gap-2">
-                <Button className="flex-1 bg-[#0d4f4f] hover:bg-[#0a3d3d]" onClick={() => handleToggleInfo(course.id, "manage") }>
-                  Manage
-                </Button>
-                <Button variant="outline" className="flex-1" onClick={() => handleViewDetails(course)}>
-                  View Details
-                </Button>
+              <div className="flex items-center justify-between text-sm">
+                <Badge
+                  variant={course.status === "active" ? "default" : "secondary"}
+                  className={course.status === "active" ? "bg-green-600" : course.status === "suspended" ? "bg-orange-600" : ""}
+                >
+                  {course.status}
+                </Badge>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="bg-[#005792] hover:bg-[#00437a]"
+                    onClick={() => openEditDialog(course)}
+                  >
+                    Manage
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => openEditDialog(course)}>
+                    View Details
+                  </Button>
+                </div>
               </div>
-
-              {selectedInfo?.id === course.id && selectedInfo.mode === "manage" ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                  <p className="font-semibold">Manage Course</p>
-                  <p className="mt-2">Course status: <strong>{course.status}</strong></p>
-                  <p className="mt-1">Expected duration: <strong>{course.duration}</strong></p>
-                  <p className="mt-1">Instructor: <strong>{course.instructor}</strong></p>
-                  <p className="mt-1">Category: <strong>{course.category}</strong></p>
-                  <p className="mt-2">Use this view to manage syllabus updates, student messaging, enrollment settings, and grading workflow.</p>
-                </div>
-              ) : null}
-
-              {selectedInfo?.id === course.id && selectedInfo.mode === "view" ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                  <p className="font-semibold">Course Details</p>
-                  <p className="mt-2">Students enrolled: <strong>{course.enrolledStudents}</strong></p>
-                  <p className="mt-1">Average completion: <strong>{course.progress ?? 0}%</strong></p>
-                  <p className="mt-1">Duration: <strong>{course.duration}</strong></p>
-                  <p className="mt-1">Category: <strong>{course.category}</strong></p>
-                  <p className="mt-2">This panel shows the current course performance and learner engagement details.</p>
-                </div>
-              ) : null}
-
-              {selectedInfo?.id === course.id && selectedInfo.mode === "analytics" ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                  <p className="font-semibold">Course Analytics</p>
-                  <p className="mt-2">Completion progress: <strong>{course.progress ?? 0}%</strong></p>
-                  <p className="mt-1">Enrollment count: <strong>{course.enrolledStudents}</strong></p>
-                  <p className="mt-1">Learner activity: <strong>Monitoring engagement and assignment completion</strong></p>
-                  <p className="mt-2">Use this view to understand how the course is performing and where students need support.</p>
-                </div>
-              ) : null}
-
-              {selectedInfo?.id === course.id && selectedInfo.mode === "edit" ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                  <p className="font-semibold">Edit Course</p>
-                  <p className="mt-2">To update this course, change the title, description, category, duration, or status.</p>
-                  <p className="mt-2">Current title: <strong>{course.title}</strong></p>
-                  <p className="mt-1">Current description: <strong>{course.description}</strong></p>
-                  <p className="mt-1">Current category: <strong>{course.category}</strong></p>
-                  <p className="mt-1">Current status: <strong>{course.status}</strong></p>
-                  <p className="mt-2">This panel is a placeholder for an edit form in the final workflow.</p>
-                </div>
-              ) : null}
             </CardContent>
           </Card>
         ))}

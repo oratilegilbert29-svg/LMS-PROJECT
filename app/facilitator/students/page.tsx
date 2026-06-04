@@ -29,9 +29,6 @@ const students = [
 ]
 
 export default function FacilitatorStudentsPage() {
-  const handleStudentAction = (studentName: string, action: string) => {
-    alert(`${action} for ${studentName}`)
-  }
   return (
     <div className="space-y-6">
       <div>
@@ -81,11 +78,7 @@ export default function FacilitatorStudentsPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input placeholder="Search students..." className="pl-10" />
         </div>
-        <Button
-          variant="outline"
-          className="gap-2"
-          onClick={() => alert("Filter options are not configured yet.")}
-        >
+        <Button variant="outline" className="gap-2">
           <Filter className="h-4 w-4" />
           Filter
         </Button>
@@ -110,7 +103,7 @@ export default function FacilitatorStudentsPage() {
                 <TableRow key={student.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0d4f4f] text-sm font-semibold text-white">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#005792] text-sm font-semibold text-white">
                         {student.name
                           .split(" ")
                           .map((n) => n[0])
@@ -155,12 +148,12 @@ export default function FacilitatorStudentsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleStudentAction(student.name, "View profile")}>View Profile</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStudentAction(student.name, "Send message") }>
+                        <DropdownMenuItem>View Profile</DropdownMenuItem>
+                        <DropdownMenuItem>
                           <Mail className="mr-2 h-4 w-4" />
                           Send Message
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStudentAction(student.name, "View progress")}>View Progress</DropdownMenuItem>
+                        <DropdownMenuItem>View Progress</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

@@ -15,6 +15,7 @@ export interface User {
 interface AuthContextType {
   user: User | null
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  register: (name: string, email: string, password: string, role: UserRole, extraData?: Record<string, string>) => Promise<{ success: boolean; error?: string }>
   logout: () => void
   isLoading: boolean
 }
@@ -80,13 +81,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: false, error: "Invalid email or password" }
   }
 
+  const register = async (name: string, email: string, password: string, role: UserRole, extraData?: Record<string, string>): Promise<{ success: boolean; error?: string }> => {
+    const exists = MOCK_USERS.find((u) => u.email === email)
+    if (exists) {
+      return { success: false, error: "Email already registered" }
+    }
+
+    const newUser: User = {
+      id: String(Date.now()),
+      email,
+      name,
+      role,
+    }
+
+    setUser(newUser)
+    localStorage.setItem("lms_user", JSON.stringify(newUser))
+    if (extraData) {
+      localStorage.setItem("lms_profile", JSON.stringify(extraData))
+    }
+
+    switch (role) {
+      case "student":
+        break
+      case "admin":
+        router.push("/admin")
+        break
+      case "facilitator":
+        router.push("/facilitator")
+        break
+    }
+
+    return { success: true }
+  }
+
   const logout = () => {
     setUser(null)
     localStorage.removeItem("lms_user")
     router.push("/auth")
   }
 
-  return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

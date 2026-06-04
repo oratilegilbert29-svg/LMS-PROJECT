@@ -64,7 +64,7 @@ export default function StudentCalendarPage() {
                   key={index}
                   className={`min-h-[80px] rounded-lg border p-2 ${
                     day === currentDate.getDate()
-                      ? "border-[#0d4f4f] bg-[#0d4f4f]/5"
+                      ? "border-[#005792] bg-[#005792]/5"
                       : day
                       ? "border-gray-100 hover:bg-gray-50"
                       : "border-transparent"
@@ -75,7 +75,7 @@ export default function StudentCalendarPage() {
                       <span
                         className={`text-sm ${
                           day === currentDate.getDate()
-                            ? "font-bold text-[#0d4f4f]"
+                            ? "font-bold text-[#005792]"
                             : "text-gray-700"
                         }`}
                       >
