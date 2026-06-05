@@ -11,12 +11,8 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!user) {
-        router.push("/auth")
-      } else if (user.role !== "student") {
-        router.push(`/${user.role}`)
-      }
+    if (!isLoading && !user) {
+      router.push("/auth")
     }
   }, [user, isLoading, router])
 
@@ -28,7 +24,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
     )
   }
 
-  if (!user || user.role !== "student") {
+  if (!user) {
     return null
   }
 

@@ -7,52 +7,10 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { mockCourses } from "@/lib/mock-data"
 import { BookOpen, Clock, Users, Search, Filter } from "lucide-react"
-import Link from "next/link"
 
 export default function StudentCoursesPage() {
   const enrolledCourses = mockCourses.slice(0, 3)
   const availableCourses = mockCourses.slice(3)
-
-  const CourseCard = ({ course, isEnrolled }: { course: (typeof enrolledCourses)[0], isEnrolled: boolean }) => (
-    <Link href={`/student/courses/${course.id}`} className="block">
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
-        <div className="h-32 bg-gradient-to-r from-[#0d4f4f] to-[#1a6b6b]" />
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div>
-              <CardTitle className="text-lg">{course.title}</CardTitle>
-              <CardDescription>{course.instructor}</CardDescription>
-            </div>
-            <Badge className={isEnrolled ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}>
-              {isEnrolled ? "Enrolled" : course.category}
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-gray-600">{course.description}</p>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <span className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              {course.duration}
-            </span>
-            <span className="flex items-center gap-1">
-              <Users className="h-4 w-4" />
-              {course.enrolledStudents}
-            </span>
-          </div>
-          {isEnrolled && (
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Progress</span>
-                <span className="font-medium">{course.progress}%</span>
-              </div>
-              <Progress value={course.progress} className="h-2" />
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </Link>
-  )
 
   return (
     <div className="space-y-6">
@@ -78,11 +36,8 @@ export default function StudentCoursesPage() {
         <h2 className="mb-4 text-lg font-semibold">Enrolled Courses</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {enrolledCourses.map((course) => (
-<<<<<<< HEAD
-            <CourseCard key={course.id} course={course} isEnrolled={true} />
-=======
             <Card key={course.id} className="overflow-hidden">
-              <div className="h-32 bg-gradient-to-r from-[#005792] to-[#00437a]" />
+              <div className="h-32 bg-gradient-to-r from-[#0d4f4f] to-[#1a6b6b]" />
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
@@ -111,12 +66,12 @@ export default function StudentCoursesPage() {
                   </div>
                   <Progress value={course.progress} className="h-2" />
                 </div>
-                <Button className="w-full bg-[#005792] hover:bg-[#00437a]">
+                <Button className="w-full bg-[#0d4f4f] hover:bg-[#0a3d3d]">
                   Continue Learning
                 </Button>
               </CardContent>
             </Card>
->>>>>>> d5fd3819bd9b658203cb59ce845af23037f1d58b
+
           ))}
         </div>
       </div>
@@ -126,10 +81,48 @@ export default function StudentCoursesPage() {
         <h2 className="mb-4 text-lg font-semibold">Available Courses</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {availableCourses.map((course) => (
-            <CourseCard key={course.id} course={course} isEnrolled={false} />
+            <Card key={course.id} className="overflow-hidden">
+              <div className="h-32 bg-gradient-to-r from-gray-400 to-gray-500" />
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-lg">{course.title}</CardTitle>
+                    <CardDescription>{course.instructor}</CardDescription>
+                  </div>
+                  <Badge variant="outline">{course.category}</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600">{course.description}</p>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    {course.duration}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    {course.enrolledStudents} enrolled
+                  </span>
+                </div>
+                <Button variant="outline" className="w-full">
+                  Enroll Now
+                </Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+

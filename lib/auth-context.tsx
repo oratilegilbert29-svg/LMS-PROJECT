@@ -114,10 +114,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: true }
   }
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null)
     localStorage.removeItem("lms_user")
-    router.push("/auth")
+    localStorage.removeItem("lms_profile")
+    // Use a small delay to ensure state updates before navigation
+    setTimeout(() => {
+      router.push("/auth")
+    }, 100)
   }
 
   return <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>{children}</AuthContext.Provider>

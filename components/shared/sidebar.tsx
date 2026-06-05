@@ -155,7 +155,9 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             </div>
           </div>
           <button
-            onClick={logout}
+            onClick={() => {
+              logout()
+            }}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#00437a]"
           >
             <LogOut className="h-5 w-5" />

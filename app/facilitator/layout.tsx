@@ -11,12 +11,8 @@ export default function FacilitatorLayout({ children }: { children: React.ReactN
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!user) {
-        router.push("/auth")
-      } else if (user.role !== "facilitator") {
-        router.push(`/${user.role}`)
-      }
+    if (!isLoading && !user) {
+      router.push("/auth")
     }
   }, [user, isLoading, router])
 
@@ -28,7 +24,7 @@ export default function FacilitatorLayout({ children }: { children: React.ReactN
     )
   }
 
-  if (!user || user.role !== "facilitator") {
+  if (!user) {
     return null
   }
 

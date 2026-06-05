@@ -55,8 +55,6 @@ export default function AuthPage() {
   const [qualifications, setQualifications] = useState("")
   const [bio, setBio] = useState("")
 
-  // Admin-specific (no extra fields)
-
   // Auto-generate student ID
   useEffect(() => {
     if (regRole === "student") {
@@ -101,8 +99,6 @@ export default function AuthPage() {
       extraData.yearsExp = yearsExp
       extraData.qualifications = qualifications
       extraData.bio = bio
-    } else if (regRole === "admin") {
-      // No extra fields needed
     }
 
     const result = await register(regName, regEmail, regPassword, regRole, extraData)
@@ -263,8 +259,6 @@ export default function AuthPage() {
     </>
   )
 
-  const renderAdminFields = () => null
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#005792] to-[#00437a] p-4">
       <Card className="w-full max-w-lg border-0 shadow-2xl">
@@ -281,27 +275,6 @@ export default function AuthPage() {
             <CardDescription className="mt-2">
               {mode === "login" ? "Sign in to access your learning portal" : "Create your account"}
             </CardDescription>
-          </div>
-
-          <div className="flex rounded-lg bg-gray-100 p-1">
-            <button
-              onClick={() => { setMode("login"); setError("") }}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                mode === "login" ? "bg-white text-[#005792] shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <LogIn className="h-4 w-4" />
-              Sign In
-            </button>
-            <button
-              onClick={() => { setMode("register"); setError("") }}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                mode === "register" ? "bg-white text-[#005792] shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <UserPlus className="h-4 w-4" />
-              Register
-            </button>
           </div>
         </CardHeader>
         <CardContent className="max-h-[calc(100vh-260px)] overflow-y-auto">
@@ -322,13 +295,24 @@ export default function AuthPage() {
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
-              <Button type="submit" className="w-full bg-[#005792] hover:bg-[#00437a]" disabled={isLoading}>
-                {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</> : "Sign In"}
-              </Button>
+              <div className="flex gap-3">
+                <Button type="submit" className="flex-1 bg-[#005792] hover:bg-[#00437a]" disabled={isLoading}>
+                  {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</> : "Sign In"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1 border-gray-300"
+                  onClick={() => setMode("register")}
+                >
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Create account
+                </Button>
+              </div>
             </form>
           ) : (
             <form onSubmit={handleRegister} className="space-y-4">
-              {renderRoleSelector()}
+          
               <hr className="border-gray-200" />
               <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Personal Information</p>
               {renderCommonFields()}
@@ -338,6 +322,15 @@ export default function AuthPage() {
               {regRole === "facilitator" && renderFacilitatorFields()}
               <Button type="submit" className="w-full bg-[#005792] hover:bg-[#00437a]" disabled={isLoading}>
                 {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account...</> : "Create Account"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() => setMode("login")}
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Back to Sign In
               </Button>
             </form>
           )}

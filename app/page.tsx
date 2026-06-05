@@ -1,40 +1,70 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { GraduationCap, BookOpen, Users, BarChart3, ArrowRight, CheckCircle, Shield, MessageSquare, Sparkles } from "lucide-react"
+import { GraduationCap, BookOpen, Users, BarChart3, ArrowRight, CheckCircle, Shield, MessageSquare, Sparkles, Clock, User, X, Phone, Mail, Globe, Send } from "lucide-react"
 
-
-const features = [
+const allCourses = [
   {
-    icon: BookOpen,
-    title: "Interactive Courses",
-    description: "Engage with multimedia-rich courses designed for modern learners with real-time progress tracking.",
+    id: 1,
+    title: "Web Development Bootcamp 2025",
+    description: "Master full-stack development with React, Next.js, Node.js, and MongoDB. Build real-world projects.",
+    modules: ["HTML/CSS Fundamentals", "JavaScript ES6+", "React & Hooks", "Node.js & Express", "MongoDB Integration", "Deployment & DevOps"],
+    duration: "12 weeks",
+    instructor: "Dr. Sarah Johnson",
+    level: "Beginner to Advanced",
+    imageBg: "bg-blue-100",
   },
   {
-    icon: Users,
-    title: "Role-Based Access",
-    description: "Dedicated portals for students, facilitators, and administrators with tailored experiences.",
+    id: 2,
+    title: "Data Science & AI Fundamentals",
+    description: "Learn Python, data analysis, machine learning, and AI ethics. Hands-on with real datasets.",
+    modules: ["Python Programming", "Data Visualization", "Statistics & Probability", "Machine Learning Basics", "Neural Networks", "AI Ethics"],
+    duration: "10 weeks",
+    instructor: "Prof. Michael Chen",
+    level: "Intermediate",
+    imageBg: "bg-green-100",
   },
   {
-    icon: BarChart3,
-    title: "Analytics & Reports",
-    description: "Comprehensive insights into student performance, course completion rates, and platform growth.",
+    id: 3,
+    title: "Digital Marketing Mastery",
+    description: "SEO, social media marketing, content strategy, analytics, and campaign management.",
+    modules: ["SEO Fundamentals", "Social Media Strategy", "Content Marketing", "Google Analytics", "Email Campaigns", "PPC Advertising"],
+    duration: "8 weeks",
+    instructor: "Emily Rodriguez",
+    level: "All Levels",
+    imageBg: "bg-purple-100",
   },
   {
-    icon: MessageSquare,
-    title: "Real-time Communication",
-    description: "Built-in messaging and notification system to keep everyone connected and informed.",
+    id: 4,
+    title: "UI/UX Design Principles",
+    description: "Design thinking, wireframing, prototyping, user research, and Figma mastery.",
+    modules: ["Design Thinking", "Wireframing & Prototyping", "User Research", "Figma Advanced", "Usability Testing", "Portfolio Project"],
+    duration: "8 weeks",
+    instructor: "David Kim",
+    level: "Beginner",
+    imageBg: "bg-orange-100",
   },
   {
-    icon: Shield,
-    title: "Secure & Scalable",
-    description: "Enterprise-grade security with role-based permissions and cloud-ready infrastructure.",
+    id: 5,
+    title: "Cybersecurity Essentials",
+    description: "Network security, cryptography, threat detection, and ethical hacking basics.",
+    modules: ["Network Security", "Cryptography", "Threat Intelligence", "Ethical Hacking", "Incident Response", "Compliance & Regulations"],
+    duration: "10 weeks",
+    instructor: "Lisa Thompson",
+    level: "Intermediate",
+    imageBg: "bg-red-100",
   },
   {
-    icon: Sparkles,
-    title: "Smart Grading",
-    description: "Streamlined assignment submission and grading workflow with instant feedback loops.",
+    id: 6,
+    title: "Business English & Communication",
+    description: "Professional writing, presentations, negotiation skills, and cross-cultural communication.",
+    modules: ["Business Writing", "Presentation Skills", "Negotiation Tactics", "Cross-cultural Communication", "Meeting Etiquette", "Email Proficiency"],
+    duration: "6 weeks",
+    instructor: "James Wilson",
+    level: "All Levels",
+    imageBg: "bg-yellow-100",
   },
 ]
 
@@ -45,7 +75,77 @@ const stats = [
   { value: "92%", label: "Completion Rate" },
 ]
 
+const registrationSteps = [
+  {
+    step: 1,
+    title: "Browse Courses",
+    description: "Explore our wide range of courses across various disciplines. Find the one that matches your goals.",
+    icon: BookOpen,
+  },
+  {
+    step: 2,
+    title: "Select Your Course",
+    description: "Click on any course to view detailed curriculum, modules, and instructor information.",
+    icon: GraduationCap,
+  },
+  {
+    step: 3,
+    title: "Create an Account",
+    description: "Sign up with your email or social account. It's free and takes less than a minute.",
+    icon: Users,
+  },
+  {
+    step: 4,
+    title: "Login & Access Dashboard",
+    description: "After login, you will have a student dashboard where you can track progress, access materials, and submit assignments.",
+    icon: BarChart3,
+    highlight: true,
+  },
+]
+
 export default function LandingPage() {
+  const [showAllCourses, setShowAllCourses] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState<typeof allCourses[0] | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // Contact form state
+  const [contactName, setContactName] = useState("")
+  const [contactEmail, setContactEmail] = useState("")
+  const [contactMessage, setContactMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+
+  const displayedCourses = showAllCourses ? allCourses : allCourses.slice(0, 3)
+
+  const openCourseModal = (course: typeof allCourses[0]) => {
+    setSelectedCourse(course)
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setSelectedCourse(null)
+  }
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus("idle")
+    
+    // Simulate API call (replace with actual backend logic)
+    setTimeout(() => {
+      console.log("Contact form submitted:", { name: contactName, email: contactEmail, message: contactMessage })
+      setSubmitStatus("success")
+      setContactName("")
+      setContactEmail("")
+      setContactMessage("")
+      setIsSubmitting(false)
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSubmitStatus("idle"), 3000)
+    }, 1000)
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
@@ -55,10 +155,10 @@ export default function LandingPage() {
             <div className="flex items-center gap-3">
               <img
                 src="/MDiHub Logo Black-01.png"
-                alt="MDIHub Logo"
+                alt="MDiHub Logo"
                 className="h-10 w-auto"
               />
-              <span className="text-xl font-bold text-gray-900">MDIHub LMS</span>
+              <span className="text-xl font-bold text-gray-900">MDiHub Learning</span>
             </div>
             <div className="flex items-center gap-4">
               <Link href="/auth">
@@ -78,19 +178,19 @@ export default function LandingPage() {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#005792]/10 to-transparent" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left side: Text content */}
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#005792]/10 text-[#005792] text-sm font-medium mb-6">
                 <Sparkles className="h-4 w-4" />
-                Next-Generation Learning Platform
+                Your Learning Journey Starts Here
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-                Empower Learning.
+                Learn Skills That
                 <br />
-                <span className="text-[#005792]">Inspire Growth.</span>
+                <span className="text-[#005792]">Shape Your Future.</span>
               </h1>
               <p className="text-lg text-gray-600 mb-8 max-w-xl">
-                A comprehensive learning management system that connects students, facilitators, and administrators
-                in a seamless educational experience.
+                Access 200+ expert-led courses, track your progress, and earn certificates. Join a community of passionate learners.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/auth">
@@ -99,9 +199,9 @@ export default function LandingPage() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="/auth">
+                <Link href="#courses">
                   <Button size="lg" variant="outline" className="border-gray-300 w-full sm:w-auto text-base px-8">
-                    Watch Demo
+                    Explore Courses
                   </Button>
                 </Link>
               </div>
@@ -111,40 +211,18 @@ export default function LandingPage() {
                 <span className="flex items-center gap-1"><CheckCircle className="h-4 w-4 text-green-500" /> Cancel anytime</span>
               </div>
             </div>
+
+            {/* Right side: Real image of student at desk with laptop */}
             <div className="relative hidden lg:block">
-              <div className="relative rounded-2xl bg-gradient-to-br from-[#005792] to-[#00437a] p-1">
-                <div className="rounded-2xl bg-white p-6 shadow-2xl">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-3 p-4 rounded-xl bg-gray-50">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#005792]/10">
-                        <Users className="h-5 w-5 text-[#005792]" />
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">5K+</p>
-                      <p className="text-sm text-gray-500">Active Students</p>
-                    </div>
-                    <div className="space-y-3 p-4 rounded-xl bg-gray-50">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                        <BookOpen className="h-5 w-5 text-green-600" />
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">200+</p>
-                      <p className="text-sm text-gray-500">Courses</p>
-                    </div>
-                    <div className="space-y-3 p-4 rounded-xl bg-gray-50">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
-                        <GraduationCap className="h-5 w-5 text-purple-600" />
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">50+</p>
-                      <p className="text-sm text-gray-500">Facilitators</p>
-                    </div>
-                    <div className="space-y-3 p-4 rounded-xl bg-gray-50">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
-                        <BarChart3 className="h-5 w-5 text-orange-600" />
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">92%</p>
-                      <p className="text-sm text-gray-500">Success Rate</p>
-                    </div>
-                  </div>
-                </div>
+              {/* Aspect-square ensures rounded-full creates a perfect circle */}
+              <div className="relative aspect-square w-full max-w-[500px] mx-auto rounded-full overflow-hidden">
+                <img
+                  src="/study.jpg"
+                  alt="Student sitting at desk with laptop studying"
+                  className="w-full h-full object-cover"
+                />
+                {/* Overlay matching the section's right side background highlight */}
+                <div className="absolute inset-0 bg-gradient-to-l from-[#005792]/15 to-transparent pointer-events-none" />
               </div>
             </div>
           </div>
@@ -165,31 +243,95 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20">
+      {/* Courses Section */}
+      <section id="courses" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Everything you need to manage learning
+              Explore Our Popular Courses
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              A complete platform that brings together students, facilitators, and administrators
-              for an unparalleled educational experience.
+              Discover expert-led courses across technology, business, design, and more.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon
+            {displayedCourses.map((course) => (
+              <div
+                key={course.id}
+                onClick={() => openCourseModal(course)}
+                className="group cursor-pointer rounded-xl border border-gray-200 bg-white overflow-hidden hover:shadow-xl hover:border-[#005792]/30 transition-all duration-300"
+              >
+                <div className={`h-32 ${course.imageBg} flex items-center justify-center`}>
+                  <BookOpen className="h-12 w-12 text-gray-700 opacity-50" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#005792] transition-colors">
+                    {course.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      <span>{course.duration}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <User className="h-4 w-4" />
+                      <span>{course.instructor.split(" ")[0]}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {!showAllCourses && allCourses.length > 3 && (
+            <div className="text-center mt-12">
+              <Button
+                onClick={() => setShowAllCourses(true)}
+                variant="outline"
+                className="border-[#005792] text-[#005792] hover:bg-[#005792] hover:text-white"
+              >
+                Show More Courses
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Registration Steps Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Get Started in 4 Simple Steps
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Your path to mastering new skills begins here. Follow these steps to start learning today.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {registrationSteps.map((step) => {
+              const Icon = step.icon
               return (
                 <div
-                  key={index}
-                  className="group p-6 rounded-xl border border-gray-200 hover:border-[#005792]/30 hover:shadow-lg hover:shadow-[#005792]/5 transition-all duration-300"
+                  key={step.step}
+                  className={`relative rounded-xl p-6 bg-white border ${
+                    step.highlight ? "border-[#005792] shadow-lg shadow-[#005792]/10" : "border-gray-200"
+                  }`}
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#005792]/10 text-[#005792] mb-4 group-hover:bg-[#005792] group-hover:text-white transition-colors">
-                    <Icon className="h-6 w-6" />
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#005792]/10 text-[#005792] text-xl font-bold mb-4">
+                    {step.step}
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#005792]/10 text-[#005792] mb-3">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{step.title}</h3>
+                  <p className="text-gray-600 text-sm">{step.description}</p>
+                  {step.highlight && (
+                    <div className="mt-3 inline-block px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full">
+                      Final Step
+                    </div>
+                  )}
                 </div>
               )
             })}
@@ -197,57 +339,128 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Roles Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Contact Us Section */}
+      <section id="contact" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Designed for every role
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#005792] mb-4">
+              Get in Touch
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Tailored experiences for students, facilitators, and administrators — all in one platform.
+              Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Students",
-                description: "Access courses, track progress, submit assignments, and communicate with facilitators in real-time.",
-                features: ["Interactive course content", "Progress tracking", "Assignment submission", "Direct messaging"],
-                color: "bg-blue-50 text-blue-600",
-                border: "border-blue-200",
-              },
-              {
-                title: "Facilitators",
-                description: "Create courses, manage students, grade submissions, and share resources effortlessly.",
-                features: ["Course management", "Student analytics", "Grading tools", "Resource library"],
-                color: "bg-green-50 text-green-600",
-                border: "border-green-200",
-              },
-              {
-                title: "Administrators",
-                description: "Oversee the entire platform, manage users, generate reports, and control settings.",
-                features: ["User management", "System analytics", "Course oversight", "Platform settings"],
-                color: "bg-purple-50 text-purple-600",
-                border: "border-purple-200",
-              },
-            ].map((role) => (
-              <div
-                key={role.title}
-                className="rounded-xl border border-gray-200 p-8 bg-white hover:shadow-xl transition-shadow"
-              >
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{role.title}</h3>
-                <p className="text-gray-600 mb-6">{role.description}</p>
-                <ul className="space-y-3">
-                  {role.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm text-gray-600">
-                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Left Card - Contact Info */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-[#005792] to-[#00437a] px-6 py-8 text-white">
+                <h3 className="text-2xl font-bold mb-2">Contact Information</h3>
+                <p className="text-[#8fc9e8]">Reach out to us through any of the channels below</p>
               </div>
-            ))}
+              <div className="p-6 space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#005792]/10 flex items-center justify-center">
+                    <Phone className="h-6 w-6 text-[#005792]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Phone Numbers</h4>
+                    <p className="text-gray-600">+1 (555) 123-4567</p>
+                    <p className="text-gray-600">+1 (555) 987-6543</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#005792]/10 flex items-center justify-center">
+                    <Mail className="h-6 w-6 text-[#005792]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Email Addresses</h4>
+                    <p className="text-gray-600">support@mdihub.com</p>
+                    <p className="text-gray-600">info@mdihub.com</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#005792]/10 flex items-center justify-center">
+                    <Globe className="h-6 w-6 text-[#005792]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Website</h4>
+                    <p className="text-gray-600">www.mdihub.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Card - Contact Form */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="bg-gray-50 px-6 py-6 border-b border-gray-100">
+                <h3 className="text-xl font-bold text-gray-900">Send us a message</h3>
+                <p className="text-gray-500 text-sm mt-1">We'll get back to you within 24 hours</p>
+              </div>
+              <form onSubmit={handleContactSubmit} className="p-6 space-y-5">
+                <div>
+                  <label htmlFor="contactName" className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="contactName"
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#005792] focus:border-transparent outline-none transition"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="contactEmail"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#005792] focus:border-transparent outline-none transition"
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contactMessage" className="block text-sm font-medium text-gray-700 mb-1">
+                    Message / Query *
+                  </label>
+                  <textarea
+                    id="contactMessage"
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    required
+                    rows={4}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#005792] focus:border-transparent outline-none transition resize-none"
+                    placeholder="Tell us how we can help you..."
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#005792] hover:bg-[#00437a] text-white"
+                >
+                  {isSubmitting ? (
+                    <>Sending...</>
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+                {submitStatus === "success" && (
+                  <p className="text-green-600 text-sm text-center">✓ Message sent successfully! We'll contact you soon.</p>
+                )}
+                {submitStatus === "error" && (
+                  <p className="text-red-600 text-sm text-center">✗ Something went wrong. Please try again later.</p>
+                )}
+              </form>
+            </div>
           </div>
         </div>
       </section>
@@ -256,28 +469,28 @@ export default function LandingPage() {
       <section className="py-20 bg-[#005792]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Ready to transform your learning experience?
+            Ready to Advance Your Career?
           </h2>
           <p className="text-lg text-[#8fc9e8] mb-8 max-w-2xl mx-auto">
-            Join thousands of learners and educators already using MDIHub LMS. Get started for free.
+            Join thousands of students who are building valuable skills and achieving their goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth">
               <Button size="lg" className="bg-white text-[#005792] hover:bg-gray-100 text-base px-8">
-                Get Started Free
+                Enroll Now - Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/auth">
+            <Link href="#courses">
               <Button size="lg" variant="outline" className="border-white text-white bg-transparent hover:bg-[#00437a] text-base px-8">
-                Sign In
+                Browse Courses
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+   {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
@@ -285,46 +498,96 @@ export default function LandingPage() {
               <div className="flex items-center gap-3 mb-4">
                 <img
                   src="/MDiHub Logo Black-01.png"
-                  alt="MDIHub Logo"
+                  alt="MDiHub Logo"
                   className="h-10 w-auto brightness-0 invert"
                 />
-                <span className="text-lg font-bold text-white">MDIHub LMS</span>
+                <span className="text-lg font-bold text-white">MDiHub Learning</span>
               </div>
-              <p className="text-sm">Empowering education through technology.</p>
-            </div>
+              <p className="text-sm">Empowering students through accessible, high-quality education.</p>
+           </div>
             <div>
-              <h4 className="font-medium text-white mb-4">Platform</h4>
+              <h4 className="font-medium text-white mb-4">Explore</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/auth" className="hover:text-white transition-colors">Features</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Courses</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link href="#courses" className="hover:text-white transition-colors">Courses</Link></li>
+                <li><Link href="/auth" className="hover:text-white transition-colors">Categories</Link></li>
+                <li><Link href="/auth" className="hover:text-white transition-colors">Certifications</Link></li>
+                <li><Link href="/auth" className="hover:text-white transition-colors">Success Stories</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium text-white mb-4">Company</h4>
+              <h4 className="font-medium text-white mb-4">Support</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/auth" className="hover:text-white transition-colors">About</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Blog</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Careers</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Contact</Link></li>
+                <li><Link href="/auth" className="hover:text-white transition-colors">Student Community</Link></li>
+                <li><Link href="#contact" className="hover:text-white transition-colors">Contact Us</Link></li> 
               </ul>
             </div>
             <div>
               <h4 className="font-medium text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/auth" className="hover:text-white transition-colors">Privacy</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Terms</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Security</Link></li>
-                <li><Link href="/auth" className="hover:text-white transition-colors">Cookies</Link></li>
+                <li><Link href="/auth" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/auth" className="hover:text-white transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-800 text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} MDIHub LMS. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} MDiHub Learning. All rights reserved.</p>
           </div>
         </div>
       </footer>
+
+      {/* Course Details Modal */}
+      {isModalOpen && selectedCourse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="relative max-w-2xl w-full bg-white rounded-2xl shadow-2xl max-h-[85vh] overflow-y-auto">
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <X className="h-6 w-6 text-gray-500" />
+            </button>
+            <div className="p-6 md:p-8">
+              <div className={`h-24 rounded-xl ${selectedCourse.imageBg} flex items-center justify-center mb-6`}>
+                <BookOpen className="h-12 w-12 text-gray-700 opacity-50" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">{selectedCourse.title}</h2>
+              <p className="text-gray-600 mb-4">{selectedCourse.description}</p>
+              <div className="flex flex-wrap gap-4 mb-6 text-sm">
+                <div className="flex items-center gap-1 text-gray-600">
+                  <Clock className="h-4 w-4" />
+                  <span>Duration: {selectedCourse.duration}</span>
+                </div>
+                <div className="flex items-center gap-1 text-gray-600">
+                  <User className="h-4 w-4" />
+                  <span>Instructor: {selectedCourse.instructor}</span>
+                </div>
+                <div className="flex items-center gap-1 text-gray-600">
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Level: {selectedCourse.level}</span>
+                </div>
+              </div>
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Course Modules</h3>
+                <ul className="space-y-2">
+                  {selectedCourse.modules.map((module, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-gray-600">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>{module}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-6 pt-4 border-t">
+                <Link href="/auth">
+                  <Button className="w-full bg-[#005792] hover:bg-[#00437a] text-white">
+                    Enroll Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
