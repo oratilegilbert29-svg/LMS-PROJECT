@@ -1,24 +1,70 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { mockAssignments } from "@/lib/mock-data"
-import { FileText, Clock, CheckCircle, AlertCircle, Upload } from "lucide-react"
+import { FileText, Clock, CheckCircle, AlertCircle, Upload, ChevronDown, ChevronRight } from "lucide-react"
+
+// Extend assignments with a duration field (if not already present)
+// In a real app, you would add this to mock-data.ts
+const assignmentsWithDuration = mockAssignments.map(assignment => ({
+  ...assignment,
+  duration: assignment.duration || (
+    // Fallback: estimate duration based on due date difference or default
+    "2 hours"
+  )
+}))
+
+// Group assignments by course name
+const groupByCourse = (assignments: any[]) => {
+  const grouped: Record<string, any[]> = {}
+  assignments.forEach(assignment => {
+    if (!grouped[assignment.courseName]) {
+      grouped[assignment.courseName] = []
+    }
+    grouped[assignment.courseName].push(assignment)
+  })
+  return grouped
+}
 
 export default function StudentAssignmentsPage() {
-  const pendingAssignments = mockAssignments.filter((a) => a.status === "pending")
-  const submittedAssignments = mockAssignments.filter((a) => a.status === "submitted")
-  const gradedAssignments = mockAssignments.filter((a) => a.status === "graded")
+  const [expandedCourses, setExpandedCourses] = useState<Record<string, boolean>>({})
+
+  const toggleCourse = (courseName: string) => {
+    setExpandedCourses(prev => ({ ...prev, [courseName]: !prev[courseName] }))
+  }
+
+  // All assignments (no status filtering for this view – show everything grouped)
+  const groupedAssignments = groupByCourse(assignmentsWithDuration)
+
+  // For stats, we still need counts by status
+  const pendingAssignments = assignmentsWithDuration.filter((a) => a.status === "pending")
+  const submittedAssignments = assignmentsWithDuration.filter((a) => a.status === "submitted")
+  const gradedAssignments = assignmentsWithDuration.filter((a) => a.status === "graded")
+
+  const getStatusBadge = (status: string, grade?: number, maxGrade?: number) => {
+    switch (status) {
+      case "pending":
+        return <Badge variant="outline" className="border-orange-300 text-orange-700 bg-orange-50">Pending</Badge>
+      case "submitted":
+        return <Badge className="bg-blue-100 text-blue-700">Submitted</Badge>
+      case "graded":
+        return <Badge className="bg-green-100 text-green-700">Grade: {grade}/{maxGrade}</Badge>
+      default:
+        return <Badge variant="outline">{status}</Badge>
+    }
+  }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Assignments</h1>
-        <p className="text-gray-500">Track and submit your coursework</p>
+        <p className="text-gray-500">All your coursework, grouped by course</p>
       </div>
 
-      {/* Stats */}
+      {/* Stats Cards (unchanged) */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -49,111 +95,98 @@ export default function StudentAssignmentsPage() {
         </Card>
       </div>
 
-      {/* Pending Assignments */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-orange-500" />
-            Pending Assignments
-          </CardTitle>
-          <CardDescription>Complete these before the deadline</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {pendingAssignments.map((assignment) => (
-            <div
-              key={assignment.id}
-              className="flex items-center justify-between rounded-lg border border-orange-200 bg-orange-50 p-4"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
-                  <FileText className="h-5 w-5 text-orange-600" />
-                </div>
-                <div>
-                  <h4 className="font-medium">{assignment.title}</h4>
-                  <p className="text-sm text-gray-500">{assignment.courseName}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <Badge variant="outline" className="border-orange-300 text-orange-700">
-                    <Clock className="mr-1 h-3 w-3" />
-                    Due: {new Date(assignment.dueDate).toLocaleDateString()}
-                  </Badge>
-                  <p className="mt-1 text-xs text-gray-500">Max: {assignment.maxGrade} points</p>
-                </div>
-                <Button className="bg-[#005792] hover:bg-[#00437a]">Submit</Button>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      {/* Assignments Grouped by Course */}
+      <div className="space-y-4">
+        {Object.entries(groupedAssignments).map(([courseName, assignments]) => {
+          const isExpanded = expandedCourses[courseName] ?? true // default open
+          const courseStats = {
+            pending: assignments.filter(a => a.status === "pending").length,
+            submitted: assignments.filter(a => a.status === "submitted").length,
+            graded: assignments.filter(a => a.status === "graded").length
+          }
 
-      {/* Submitted Assignments */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5 text-blue-500" />
-            Submitted
-          </CardTitle>
-          <CardDescription>Awaiting grading</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {submittedAssignments.map((assignment) => (
-            <div
-              key={assignment.id}
-              className="flex items-center justify-between rounded-lg border p-4"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                  <FileText className="h-5 w-5 text-blue-600" />
+          return (
+            <Card key={courseName} className="overflow-hidden">
+              <CardHeader
+                className="cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => toggleCourse(courseName)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {isExpanded ? <ChevronDown className="h-5 w-5 text-gray-500" /> : <ChevronRight className="h-5 w-5 text-gray-500" />}
+                    <CardTitle>{courseName}</CardTitle>
+                  </div>
+                  <div className="flex gap-2 text-sm">
+                    <span className="text-orange-600">{courseStats.pending} pending</span>
+                    <span className="text-blue-600">{courseStats.submitted} submitted</span>
+                    <span className="text-green-600">{courseStats.graded} graded</span>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-medium">{assignment.title}</h4>
-                  <p className="text-sm text-gray-500">{assignment.courseName}</p>
-                </div>
-              </div>
-              <Badge className="bg-blue-100 text-blue-700">Awaiting Grade</Badge>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Graded Assignments */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-            Graded
-          </CardTitle>
-          <CardDescription>View your results</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {gradedAssignments.map((assignment) => (
-            <div
-              key={assignment.id}
-              className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-4"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                  <FileText className="h-5 w-5 text-green-600" />
-                </div>
-                <div>
-                  <h4 className="font-medium">{assignment.title}</h4>
-                  <p className="text-sm text-gray-500">{assignment.courseName}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-green-600">
-                  {assignment.grade}/{assignment.maxGrade}
-                </div>
-                <p className="text-sm text-gray-500">
-                  {Math.round((assignment.grade! / assignment.maxGrade) * 100)}%
-                </p>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+                <CardDescription>
+                  {assignments.length} assignment{assignments.length !== 1 ? "s" : ""}
+                </CardDescription>
+              </CardHeader>
+              {isExpanded && (
+                <CardContent className="space-y-4 pt-0">
+                  {assignments.map((assignment) => (
+                    <div
+                      key={assignment.id}
+                      className={`rounded-lg border p-4 transition-colors ${
+                        assignment.status === "pending"
+                          ? "border-orange-200 bg-orange-50"
+                          : assignment.status === "graded"
+                            ? "border-green-200 bg-green-50"
+                            : "border-gray-200"
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                            assignment.status === "pending"
+                              ? "bg-orange-100"
+                              : assignment.status === "submitted"
+                                ? "bg-blue-100"
+                                : "bg-green-100"
+                          }`}>
+                            <FileText className={`h-5 w-5 ${
+                              assignment.status === "pending"
+                                ? "text-orange-600"
+                                : assignment.status === "submitted"
+                                  ? "text-blue-600"
+                                  : "text-green-600"
+                            }`} />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">{assignment.title}</h4>
+                            <div className="flex flex-wrap gap-3 text-sm text-gray-500">
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                Duration: {assignment.duration}
+                              </span>
+                              <span>•</span>
+                              <span>Due: {new Date(assignment.dueDate).toLocaleDateString()}</span>
+                              <span>•</span>
+                              <span>Max points: {assignment.maxGrade}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {getStatusBadge(assignment.status, assignment.grade, assignment.maxGrade)}
+                          {assignment.status === "pending" && (
+                            <Button size="sm" className="bg-[#005792] hover:bg-[#00437a]">
+                              Submit
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              )}
+            </Card>
+          )
+        })}
+      </div>
     </div>
   )
 }

@@ -19,6 +19,7 @@ export interface Assignment {
   courseId: string
   courseName: string
   dueDate: string
+  duration?: string
   status: "pending" | "submitted" | "graded"
   grade?: number
   maxGrade: number
